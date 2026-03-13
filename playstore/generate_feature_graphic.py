@@ -81,20 +81,14 @@ def draw_feature_graphic():
     draw = ImageDraw.Draw(bg)
     
     # ── Left Side: Minimalist Icon & Typgraphy ──
-    # Icon with rounded corners and transparent background
+    # Icon with its natural transparent background
     icon = load_img("app_icon.png")
     if icon:
         iw = 110
         icon = icon.resize((iw, iw), Image.Resampling.LANCZOS)
-        imask = Image.new("L", icon.size, 0)
-        ImageDraw.Draw(imask).rounded_rectangle([0, 0, iw, iw], radius=24, fill=255)
-        # Drop shadow for icon
-        shadow = Image.new("RGBA", (iw+20, iw+20), (0,0,0,0))
-        ImageDraw.Draw(shadow).rounded_rectangle([10, 10, iw+10, iw+10], radius=24, fill=(0,0,0,30))
-        shadow = shadow.filter(ImageFilter.GaussianBlur(12))
-        bg.paste(shadow, (70-10, 100-10+6), shadow)
         
-        bg.paste(icon, (70, 100), imask)
+        # Paste using the icon itself as the mask to preserve its true alpha channel!
+        bg.paste(icon, (70, 100), icon)
 
     # Typgraphy
     f_title = font(64)
@@ -111,27 +105,13 @@ def draw_feature_graphic():
     f_foot = font(14)
     draw.text((75, H - 40), "© Zenhance", font=f_foot, fill=(180, 185, 195, 255)) # Very subtle copyright
 
-    # ── Right Side: Iconic Classic White Cat ──
-    # We remove screenshots and just use the singular, iconic white pixel cat
-    # placed centrally on the right side.
+    # ── Right Side: Iconic Classic White Cat (MUCH LARGER) ──
     cat_info = load_first_cat()
-    cat_img = draw_cat(cat_info, pixel_size=10) # Large pixel size
+    cat_img = draw_cat(cat_info, pixel_size=20) # Much larger pixel size (around 420x420)
     if cat_img:
-        # Add a soft drop shadow to the cat
-        c_shadow = cat_img.copy().convert("RGBA")
-        # Turn cat shadow pure black
-        cdata = c_shadow.load()
-        for x in range(c_shadow.width):
-            for y in range(c_shadow.height):
-                _, _, _, a = cdata[x,y]
-                if a > 0:
-                    cdata[x,y] = (0,0,0,40)
-        c_shadow = c_shadow.filter(ImageFilter.GaussianBlur(20))
-        
-        cx = W - cat_img.width - 140
-        cy = (H - cat_img.height) // 2 + 10
-        
-        bg.paste(c_shadow, (cx, cy+15), c_shadow)
+        # Perfectly crisp, properly transparent pixel cat without dirty drop shadows
+        cx = W - cat_img.width - 60
+        cy = (H - cat_img.height) // 2
         bg.paste(cat_img, (cx, cy), cat_img)
 
     return bg
