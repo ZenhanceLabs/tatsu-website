@@ -1,25 +1,23 @@
 """
-Play Store Feature Graphic Generator
+Play Store Feature Graphic Generator - Minimalist Version
 Size: 1024x500
-Dynamic, Cool, Dark/Neon Theme
+Light, clean, elegant theme. No screenshots. Just one iconic cat.
 """
 import os
 import re
 import json
-import random
-import math
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 W, H = 1024, 500
 OUTPUT_DIR = os.path.dirname(__file__)
 BASE_DIR = os.path.join(os.path.dirname(__file__), "..")
 
-FONT_BOLD = "C:/Windows/Fonts/meiryob.ttc"
+# Using the regular Meiryo font for a thinner, lighter look
 FONT_REGULAR = "C:/Windows/Fonts/meiryo.ttc"
 
-def font(size, bold=True):
+def font(size):
     try:
-        return ImageFont.truetype(FONT_BOLD if bold else FONT_REGULAR, size, index=0)
+        return ImageFont.truetype(FONT_REGULAR, size, index=0)
     except:
         return ImageFont.load_default()
 
@@ -29,8 +27,8 @@ def load_img(name):
         return Image.open(p).convert("RGBA")
     return None
 
-def load_cats():
-    """Load and parse cats from pixelcats.js"""
+def load_first_cat():
+    """Load only the first cat (Classic White) from pixelcats.js"""
     cats_path = os.path.join(BASE_DIR, "pixelcats.js")
     try:
         with open(cats_path, "r", encoding="utf-8") as f:
@@ -38,13 +36,17 @@ def load_cats():
             match = re.search(r'const pixelCats\s*=\s*(\[.*\]);', content, re.DOTALL)
             if match:
                 cats_data = json.loads(match.group(1))
-                return [c for c in cats_data if 'data' in c and isinstance(c['data'], list)]
+                for c in cats_data:
+                    if 'data' in c and isinstance(c['data'], list):
+                        return c
     except Exception as e:
         print(f"Error loading cats: {e}")
-    return []
+    return None
 
-def draw_cat(cat_info, pixel_size=4):
+def draw_cat(cat_info, pixel_size=6):
     """Render a single cat to PIL Image"""
+    if not cat_info:
+        return None
     data_rows = cat_info.get('data', [])
     pal = cat_info.get('pal', {})
     if not data_rows: return None
@@ -61,141 +63,82 @@ def draw_cat(cat_info, pixel_size=4):
                 d.rectangle([x*pixel_size, y*pixel_size, (x+1)*pixel_size, (y+1)*pixel_size], fill=color)
     return img
 
-def create_glowing_bg():
-    # Dark modern gradient
-    bg = Image.new("RGBA", (W, H), (15, 18, 25, 255))
-    draw = ImageDraw.Draw(bg)
-    for y in range(H):
-        ratio = y / H
-        # top dark blue to bottom dark purple/slate
-        r = int(10 + ratio * 20)
-        g = int(15 + ratio * 15)
-        b = int(25 + ratio * 30)
-        draw.line([(0, y), (W, y)], fill=(r,g,b,255))
-        
-    # Add glowing orbs for depth
-    orbs = Image.new("RGBA", (W, H), (0,0,0,0))
-    od = ImageDraw.Draw(orbs)
-    od.ellipse([-200, -200, 400, 400], fill=(59, 130, 246, 60)) # Blue blur
-    od.ellipse([700, 100, 1300, 700], fill=(139, 92, 246, 50)) # Purple blur
-    od.ellipse([300, 300, 800, 800], fill=(99, 102, 241, 40)) # Indigo blur
-    orbs = orbs.filter(ImageFilter.GaussianBlur(80))
-    
-    bg = Image.alpha_composite(bg, orbs)
-    return bg
-
-def draw_framed_phone(ss_img, width, border=4, radius=16):
-    """Draws a simple rounded phone frame around a screenshot"""
-    scale = width / ss_img.width
-    nh = int(ss_img.height * scale)
-    nw = width
-    ss = ss_img.resize((nw, nh), Image.Resampling.LANCZOS)
-    
-    frame = Image.new("RGBA", (nw + border*2, nh + border*2), (0,0,0,0))
-    fd = ImageDraw.Draw(frame)
-    # Outer frame
-    fd.rounded_rectangle([0, 0, frame.width, frame.height], radius=radius+border, fill=(20,20,25,255))
-    # Inner border line
-    fd.rounded_rectangle([border-1, border-1, frame.width-border+1, frame.height-border+1], radius=radius, outline=(80,80,90,255), width=1)
-    
-    # Mask for screenshot
-    mask = Image.new("L", (nw, nh), 0)
-    ImageDraw.Draw(mask).rounded_rectangle([0,0,nw,nh], radius=radius, fill=255)
-    
-    frame.paste(ss, (border, border), mask)
-    
-    # Add simple glare
-    glare = Image.new("RGBA", frame.size, (0,0,0,0))
-    gd = ImageDraw.Draw(glare)
-    pts = [(0, 0), (frame.width*0.8, 0), (0, frame.height*0.5)]
-    gd.polygon(pts, fill=(255,255,255,15))
-    frame = Image.alpha_composite(frame, glare)
-    
-    return frame
+def create_gradient_bg():
+    img = Image.new("RGB", (W, H))
+    d = ImageDraw.Draw(img)
+    # A very subtle, elegant soft gradient (Top-Left: Almost White -> Bottom-Right: Soft Sky)
+    for x in range(W):
+        for y in range(H):
+            ratio = (x/W + y/H) / 2
+            r = int(255 - ratio * 15)
+            g = int(255 - ratio * 12)
+            b = int(255 - ratio * 5)
+            d.point((x, y), fill=(r, g, b))
+    return img.convert("RGBA")
 
 def draw_feature_graphic():
-    bg = create_glowing_bg()
-    
-    # ── Phones (Dynamic Arrangement on Right) ──
-    ss1 = load_img("home.png")
-    ss2 = load_img("analysis_1.png")
-    
-    if ss1 and ss2:
-        pw = 260
-        # Phone 1 (Back/Left)
-        p1 = draw_framed_phone(ss2, pw)
-        p1_rot = p1.rotate(12, expand=True, resample=Image.Resampling.BICUBIC)
-        # Drop shadow for P1
-        p1_shadow = p1_rot.copy().convert("RGBA")
-        p1_shadow = p1_shadow.filter(ImageFilter.GaussianBlur(10))
-        bg.paste((0,0,0,100), (450+10, 80+10), p1_shadow.getchannel("A"))
-        bg.paste(p1_rot, (450, 80), p1_rot)
-        
-        # Phone 2 (Front/Right)
-        p2 = draw_framed_phone(ss1, pw)
-        p2_rot = p2.rotate(-8, expand=True, resample=Image.Resampling.BICUBIC)
-        p2_shadow = p2_rot.copy().convert("RGBA")
-        p2_shadow = p2_shadow.filter(ImageFilter.GaussianBlur(15))
-        bg.paste((0,0,0,150), (660+15, 50+15), p2_shadow.getchannel("A"))
-        bg.paste(p2_rot, (660, 50), p2_rot)
-
-    # ── Cats (Floating around) ──
-    cats = load_cats()
-    if cats:
-        random.seed(42) # Deterministic
-        selected_cats = random.sample(cats, min(6, len(cats)))
-        positions = [
-            (380, 50, -15), (920, 100, 20), (520, 400, 10), 
-            (880, 380, -25), (420, 250, 5), (800, 420, -10)
-        ]
-        
-        for i, cat in enumerate(selected_cats):
-            if i >= len(positions): break
-            cimg = draw_cat(cat, pixel_size=5)
-            if cimg:
-                x, y, rot = positions[i]
-                cimg_rot = cimg.rotate(rot, expand=True, resample=Image.Resampling.NEAREST)
-                bg.paste(cimg_rot, (x, y), cimg_rot)
-
-    # ── Text (Left aligned, modern typography) ──
+    bg = Image.new("RGBA", (W, H), (252, 253, 255, 255))
     draw = ImageDraw.Draw(bg)
     
-    # Icon and App Name
+    # ── Left Side: Minimalist Icon & Typgraphy ──
+    # Icon with rounded corners and transparent background
     icon = load_img("app_icon.png")
     if icon:
-        icon = icon.resize((90, 90), Image.Resampling.LANCZOS)
-        # Add a gentle glow to icon
-        iglow = icon.copy().filter(ImageFilter.GaussianBlur(8))
-        bg.paste((255,255,255,100), (60, 60), iglow.getchannel("A"))
-        
-        # Round the icon fully for the display
+        iw = 110
+        icon = icon.resize((iw, iw), Image.Resampling.LANCZOS)
         imask = Image.new("L", icon.size, 0)
-        ImageDraw.Draw(imask).rounded_rectangle([0,0,90,90], radius=20, fill=255)
-        bg.paste(icon, (60, 60), imask)
-    
-    f_title = font(76)
-    draw.text((170, 60), "TATSU", font=f_title, fill=(255,255,255,255))
-    
-    # Catchphrase
-    f_sub = font(42)
-    f_sub_bold = font(48, bold=True)
-    draw.text((60, 200), "がんばらなくていい", font=f_sub_bold, fill=(96, 165, 250, 255)) # Blue-400
-    draw.text((60, 260), "デジタルデトックス。", font=f_sub_bold, fill=(255,255,255,255))
-    
-    # Description
-    f_desc = font(22, bold=False)
-    draw.text((60, 340), "システムに身を委ねて、", font=f_desc, fill=(156, 163, 175, 255))
-    draw.text((60, 375), "ストレスなくスマホ時間を減らそう。", font=f_desc, fill=(156, 163, 175, 255))
+        ImageDraw.Draw(imask).rounded_rectangle([0, 0, iw, iw], radius=24, fill=255)
+        # Drop shadow for icon
+        shadow = Image.new("RGBA", (iw+20, iw+20), (0,0,0,0))
+        ImageDraw.Draw(shadow).rounded_rectangle([10, 10, iw+10, iw+10], radius=24, fill=(0,0,0,30))
+        shadow = shadow.filter(ImageFilter.GaussianBlur(12))
+        bg.paste(shadow, (70-10, 100-10+6), shadow)
+        
+        bg.paste(icon, (70, 100), imask)
 
-    # Copyright (Tiny, unobtrusive)
-    f_foot = font(14, bold=False)
-    draw.text((60, H - 30), "© 2026 Zenhance", font=f_foot, fill=(255, 255, 255, 60))
+    # Typgraphy
+    f_title = font(64)
+    # Use dark slate/charcoal color for elegance instead of complete black
+    TEXT_COLOR = (40, 48, 60, 255)
+    
+    draw.text((210, 108), "TATSU", font=f_title, fill=TEXT_COLOR)
+    
+    f_sub = font(34)
+    # Use thinner, non-bold text for the catchphrase with elegant spacing
+    draw.text((75, 250), "がんばらなくていい", font=f_sub, fill=TEXT_COLOR)
+    draw.text((75, 310), "デジタルデトックス。", font=f_sub, fill=TEXT_COLOR)
+    
+    f_foot = font(14)
+    draw.text((75, H - 40), "© Zenhance", font=f_foot, fill=(180, 185, 195, 255)) # Very subtle copyright
+
+    # ── Right Side: Iconic Classic White Cat ──
+    # We remove screenshots and just use the singular, iconic white pixel cat
+    # placed centrally on the right side.
+    cat_info = load_first_cat()
+    cat_img = draw_cat(cat_info, pixel_size=10) # Large pixel size
+    if cat_img:
+        # Add a soft drop shadow to the cat
+        c_shadow = cat_img.copy().convert("RGBA")
+        # Turn cat shadow pure black
+        cdata = c_shadow.load()
+        for x in range(c_shadow.width):
+            for y in range(c_shadow.height):
+                _, _, _, a = cdata[x,y]
+                if a > 0:
+                    cdata[x,y] = (0,0,0,40)
+        c_shadow = c_shadow.filter(ImageFilter.GaussianBlur(20))
+        
+        cx = W - cat_img.width - 140
+        cy = (H - cat_img.height) // 2 + 10
+        
+        bg.paste(c_shadow, (cx, cy+15), c_shadow)
+        bg.paste(cat_img, (cx, cy), cat_img)
 
     return bg
 
 if __name__ == "__main__":
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    print("Generating cool feature graphic...")
+    print("Generating minimalist feature graphic...")
     img = draw_feature_graphic()
     out_path = os.path.join(OUTPUT_DIR, "feature_graphic.png")
     img.save(out_path, "PNG")
