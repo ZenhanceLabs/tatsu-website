@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スマホモックアッププレビューツール</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+
+        /* スクロールバーのカスタマイズ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .svg-container {
+            /* スマホの縦横比を保ちつつ、画面に収める */
+            height: calc(100vh - 4rem);
+            max-height: 850px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #phone-svg {
+            height: 100%;
+            width: auto;
+            max-width: 100%;
+            filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.15));
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800 h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <!-- 左側：コントロールパネル -->
+    <div class="w-full md:w-80 bg-white border-r border-gray-200 p-6 flex flex-col shadow-lg z-10 overflow-y-auto"
+        style="height: 100vh;">
+        <h1 class="text-xl font-bold mb-6 text-gray-900 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            Mockup Viewer
+        </h1>
+
+        <!-- 画像アップロード -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">スクリーンショット画像</label>
+            <label for="image-upload"
+                class="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 hover:border-indigo-400 transition-colors">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg class="w-8 h-8 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                        </path>
+                    </svg>
+                    <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">クリックして選択</span></p>
+                    <p class="text-xs text-gray-500">PNG, JPG</p>
+                </div>
+                <input id="image-upload" type="file" class="hidden" accept="image/png, image/jpeg, image/jpg" />
+            </label>
+        </div>
+
+        <!-- パンチホール位置設定 -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">パンチホールの位置</label>
+            <div class="flex rounded-md shadow-sm" role="group">
+                <button type="button" id="btn-hole-center"
+                    class="flex-1 px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-indigo-600 rounded-l-lg focus:z-10 focus:ring-2 focus:ring-indigo-500">
+                    中央
+                </button>
+                <button type="button" id="btn-hole-left"
+                    class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-r-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500">
+                    左上
+                </button>
+            </div>
+        </div>
+
+        <!-- 画像のフィット方法 -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">画像のフィット方法</label>
+            <select id="fit-mode"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5">
+                <option value="cover">画面いっぱいに埋める (Cover)</option>
+                <option value="meet">全体を表示する (Contain)</option>
+            </select>
+        </div>
+
+        <!-- フレームカラー -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">フレームカラー</label>
+            <div class="flex gap-3">
+                <button id="color-dark"
+                    class="w-8 h-8 rounded-full bg-[#2c2c2c] border-2 border-indigo-500 ring-2 ring-offset-1 ring-transparent focus:outline-none"></button>
+                <button id="color-light"
+                    class="w-8 h-8 rounded-full bg-[#e5e5e5] border-2 border-transparent hover:border-gray-400 focus:outline-none"></button>
+                <button id="color-titanium"
+                    class="w-8 h-8 rounded-full bg-[#8b8c89] border-2 border-transparent hover:border-gray-400 focus:outline-none"></button>
+            </div>
+        </div>
+
+        <div class="mt-auto pt-4 border-t border-gray-200">
+            <button id="btn-download"
+                class="w-full flex justify-center items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                SVGをダウンロード
+            </button>
+        </div>
+    </div>
+
+    <!-- 右側：プレビュー領域 -->
+    <div class="flex-1 bg-gray-100 relative flex items-center justify-center p-4 overflow-hidden"
+        id="preview-container">
+        <!-- 背景の装飾 -->
+        <div class="absolute inset-0 z-0 opacity-40"
+            style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+        <div class="svg-container relative z-10 w-full">
+            <!-- SVG スマホフレーム -->
+            <!-- 380x820のビューポートで、画面は340x780 (約20:9) -->
+            <svg id="phone-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 820">
+                <defs>
+                    <!-- 画面の切り抜き（角丸） -->
+                    <clipPath id="screen-clip">
+                        <rect x="20" y="20" width="340" height="780" rx="32" ry="32" />
+                    </clipPath>
+
+                    <!-- 画面内側のシャドウ（ベゼルとの境界の立体感） -->
+                    <filter id="inner-shadow">
+                        <feOffset dx="0" dy="0" />
+                        <feGaussianBlur stdDeviation="3" result="offset-blur" />
+                        <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" />
+                        <feFlood flood-color="black" flood-opacity="0.5" result="color" />
+                        <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+                        <feComposite operator="over" in="shadow" in2="SourceGraphic" />
+                    </filter>
+                </defs>
+
+                <!-- 端末外枠 (シャドウやハイライトを追加して立体的に) -->
+                <!-- メインボディ -->
+                <rect id="frame-body" x="10" y="10" width="360" height="800" rx="42" ry="42" fill="#2c2c2c"
+                    stroke="#555" stroke-width="1.5" />
+                <!-- アンテナライン（上部と下部） -->
+                <rect x="9" y="80" width="3" height="4" fill="#111" opacity="0.5" />
+                <rect x="368" y="80" width="3" height="4" fill="#111" opacity="0.5" />
+                <rect x="9" y="736" width="3" height="4" fill="#111" opacity="0.5" />
+                <rect x="368" y="736" width="3" height="4" fill="#111" opacity="0.5" />
+
+                <!-- 黒いベゼル -->
+                <rect x="14" y="14" width="352" height="792" rx="38" ry="38" fill="#050505" />
+
+                <!-- 画面背景（画像がない時の色） -->
+                <rect x="20" y="20" width="340" height="780" rx="32" ry="32" fill="#1e1e1e" />
+
+                <!-- ★ ユーザーがアップロードした画像を表示する領域 ★ -->
+                <!-- preserveAspectRatio="xMidYMid slice" で cover のような挙動になる -->
+                <image id="uploaded-image" href="" x="20" y="20" width="340" height="780"
+                    preserveAspectRatio="xMidYMid slice" clip-path="url(#screen-clip)" filter="url(#inner-shadow)" />
+
+                <!-- プレースホルダーテキスト -->
+                <g id="placeholder-group" opacity="1">
+                    <rect x="120" y="370" width="140" height="40" rx="8" fill="rgba(0,0,0,0.6)" />
+                    <text x="190" y="395" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="bold"
+                        text-anchor="middle">No Image</text>
+                </g>
+
+                <!-- パンチホールカメラ -->
+                <!-- transform属性をJSで操作して位置を切り替える -->
+                <g id="punch-hole" transform="translate(0, 0)" style="transition: transform 0.3s ease;">
+                    <!-- カメラの黒い縁 -->
+                    <circle cx="190" cy="46" r="11" fill="#000" />
+                    <!-- レンズの反射 -->
+                    <circle cx="190" cy="46" r="4.5" fill="#1a1a24" />
+                    <circle cx="191.5" cy="44.5" r="1.5" fill="#3a3a4c" opacity="0.8" />
+                    <!-- 画面の光の反射（カメラ穴の縁） -->
+                    <path d="M 179 46 A 11 11 0 0 1 201 46" fill="none" stroke="rgba(255,255,255,0.1)"
+                        stroke-width="1" />
+                </g>
+
+                <!-- 上部スピーカー（スリット） -->
+                <rect x="160" y="14" width="60" height="2" rx="1" fill="#222" />
+
+                <!-- 物理ボタン (右側面) -->
+                <!-- 音量アップ -->
+                <path d="M 370 200 L 372 200 L 372 245 L 370 245 Z" fill="#444" />
+                <!-- 音量ダウン -->
+                <path d="M 370 250 L 372 250 L 372 295 L 370 295 Z" fill="#444" />
+                <!-- 電源ボタン -->
+                <path d="M 370 330 L 372.5 330 L 372.5 375 L 370 375 Z" fill="#444" />
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM要素の取得
+            const imageInput = document.getElementById('image-upload');
+            const uploadedImage = document.getElementById('uploaded-image');
+            const placeholderGroup = document.getElementById('placeholder-group');
+            const punchHole = document.getElementById('punch-hole');
+            const fitModeSelect = document.getElementById('fit-mode');
+
+            // ボタン要素
+            const btnHoleCenter = document.getElementById('btn-hole-center');
+            const btnHoleLeft = document.getElementById('btn-hole-left');
+            const btnDownload = document.getElementById('btn-download');
+
+            // カラーボタン
+            const colorDark = document.getElementById('color-dark');
+            const colorLight = document.getElementById('color-light');
+            const colorTitanium = document.getElementById('color-titanium');
+            const frameBody = document.getElementById('frame-body');
+
+            // 1. 画像アップロード処理
+            imageInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        // 読み込んだ画像のDataURLをSVGのimageタグにセット
+                        uploadedImage.setAttribute('href', event.target.result);
+                        // プレースホルダーを隠す
+                        placeholderGroup.setAttribute('opacity', '0');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // 2. パンチホール位置の切り替え処理
+            function setHolePosition(position) {
+                if (position === 'center') {
+                    // 中央: cx=190
+                    punchHole.setAttribute('transform', 'translate(0, 0)');
+
+                    // ボタンスタイル更新
+                    btnHoleCenter.className = "flex-1 px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-indigo-600 rounded-l-lg focus:z-10 focus:ring-2 focus:ring-indigo-500";
+                    btnHoleLeft.className = "flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-r-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500";
+                } else if (position === 'left') {
+                    // 左上: X軸にマイナス移動 (190 - 130 = X座標60あたり)
+                    punchHole.setAttribute('transform', 'translate(-120, 0)');
+
+                    // ボタンスタイル更新
+                    btnHoleLeft.className = "flex-1 px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-indigo-600 rounded-r-lg focus:z-10 focus:ring-2 focus:ring-indigo-500";
+                    btnHoleCenter.className = "flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500";
+                }
+            }
+
+            btnHoleCenter.addEventListener('click', () => setHolePosition('center'));
+            btnHoleLeft.addEventListener('click', () => setHolePosition('left'));
+
+            // 3. 画像のフィット方法切り替え
+            fitModeSelect.addEventListener('change', function (e) {
+                if (e.target.value === 'cover') {
+                    // 枠いっぱいにトリミングして表示
+                    uploadedImage.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+                } else {
+                    // 画像全体を枠内に収めて表示（余白ができる場合あり）
+                    uploadedImage.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                }
+            });
+
+            // 4. フレームカラーの切り替え
+            function updateActiveColorButton(activeBtn) {
+                [colorDark, colorLight, colorTitanium].forEach(btn => {
+                    btn.classList.remove('border-indigo-500');
+                    btn.classList.add('border-transparent');
+                });
+                activeBtn.classList.remove('border-transparent');
+                activeBtn.classList.add('border-indigo-500');
+            }
+
+            colorDark.addEventListener('click', () => {
+                frameBody.setAttribute('fill', '#2c2c2c');
+                frameBody.setAttribute('stroke', '#555');
+                updateActiveColorButton(colorDark);
+            });
+
+            colorLight.addEventListener('click', () => {
+                frameBody.setAttribute('fill', '#e5e5e5');
+                frameBody.setAttribute('stroke', '#ccc');
+                updateActiveColorButton(colorLight);
+            });
+
+            colorTitanium.addEventListener('click', () => {
+                frameBody.setAttribute('fill', '#8b8c89');
+                frameBody.setAttribute('stroke', '#a3a4a1');
+                updateActiveColorButton(colorTitanium);
+            });
+
+            // 5. SVGダウンロード機能
+            btnDownload.addEventListener('click', () => {
+                const svg = document.getElementById('phone-svg');
+                // SVGデータを取得するための準備
+                const serializer = new XMLSerializer();
+                let source = serializer.serializeToString(svg);
+
+                // XML宣言を追加
+                if (!source.match(/^<\?xml[^>]+>/)) {
+                    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+                }
+
+                // Data URIを作成
+                const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+
+                // ダウンロード用リンクを作成してクリック
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "phone_mockup.svg";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        });
+    </script>
+</body>
+
+</html>
