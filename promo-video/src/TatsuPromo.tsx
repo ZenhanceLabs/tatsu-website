@@ -2,6 +2,7 @@ import {motion} from 'framer-motion';
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame} from 'remotion';
 import {pixelCats, type PixelCat} from './pixelCatsData';
+import {type Lang, PROMO_TEXTS, getFontStack} from './i18n';
 
 const palette = {
   blue: '#1a73e8',
@@ -21,6 +22,7 @@ const palette = {
 };
 
 const fontStack = '"Noto Sans JP", "Segoe UI", sans-serif';
+// NOTE: fontStack is now dynamic per-lang, see TatsuPromo component
 
 const abs = (style: React.CSSProperties): React.CSSProperties => ({position: 'absolute', ...style});
 
@@ -71,7 +73,7 @@ const PixelCatSprite: React.FC<{cat: PixelCat; size: number}> = ({cat, size}) =>
   );
 };
 
-const FullscreenTaskCard: React.FC<{frame: number; opacity: number}> = ({frame, opacity}) => {
+const FullscreenTaskCard: React.FC<{frame: number; opacity: number; t: import('./i18n').PromoTexts}> = ({frame, opacity, t}) => {
   const enter = springSegment(frame, 0, 28);
   const split = segment(frame, 96, 180);
   return (
@@ -82,7 +84,7 @@ const FullscreenTaskCard: React.FC<{frame: number; opacity: number}> = ({frame, 
           <div style={{width: 180, height: 180, borderRadius: 56, backgroundColor: palette.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', color: palette.blue, fontSize: 54}}>●</div>
           <div>
             <div style={{fontSize: 84, fontWeight: 900, color: palette.text, lineHeight: 1}}>YouTube</div>
-            <div style={{fontSize: 52, color: palette.muted, marginTop: 18}}>1日60分まで</div>
+            <div style={{fontSize: 52, color: palette.muted, marginTop: 18}} id="taskLimit">{t.taskLimit}</div>
           </div>
           <div style={{width: 68, height: 68, borderRadius: 34, border: `4px solid ${palette.border}`}} />
         </div>
@@ -96,7 +98,7 @@ const FullscreenTaskCard: React.FC<{frame: number; opacity: number}> = ({frame, 
   );
 };
 
-const FullscreenBarChart: React.FC<{frame: number; opacity: number}> = ({frame, opacity}) => {
+const FullscreenBarChart: React.FC<{frame: number; opacity: number; t: import('./i18n').PromoTexts}> = ({frame, opacity, t}) => {
   const bars = [310, 410, 470, 360, 430, 500, 330];
   const targets = [150, 190, 215, 180, 205, 220, 160];
   const colors = [palette.redSoft, palette.yellowSoft, palette.blueSoft, palette.blueSoft, palette.greenSoft, palette.yellowSoft, palette.redSoft];
@@ -122,7 +124,7 @@ const FullscreenBarChart: React.FC<{frame: number; opacity: number}> = ({frame, 
             return (
               <React.Fragment key={index}>
                 <div style={{...abs({left, top, width: 118, height}), backgroundColor: colors[index], border: `3px solid ${strokes[index]}`, borderTopLeftRadius: 32, borderTopRightRadius: 32, borderBottomLeftRadius: 10, borderBottomRightRadius: 10}} />
-                <div style={{...abs({left: left + 42, top: 650, width: 34, textAlign: 'center'}), fontSize: 22, color: '#94a3b8'}}>{['月', '火', '水', '木', '金', '土', '日'][index]}</div>
+                <div style={{...abs({left: left + 42, top: 650, width: 34, textAlign: 'center'}), fontSize: 22, color: '#94a3b8'}} className="day-label-item">{t.dayLabels[index]}</div>
               </React.Fragment>
             );
           })}
@@ -132,7 +134,7 @@ const FullscreenBarChart: React.FC<{frame: number; opacity: number}> = ({frame, 
   );
 };
 
-const FullscreenDonut: React.FC<{frame: number; opacity: number}> = ({frame, opacity}) => {
+const FullscreenDonut: React.FC<{frame: number; opacity: number; t: import('./i18n').PromoTexts}> = ({frame, opacity, t}) => {
   const p = segment(frame, 300, 450);
   const size = mix(420, 1200, p);
   const strokeWidth = mix(42, 180, p);
@@ -168,7 +170,7 @@ const FullscreenDonut: React.FC<{frame: number; opacity: number}> = ({frame, opa
           })}
         </svg>
         <div style={{...abs({inset: 0}), display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-          <div style={{fontSize: 22, fontWeight: 700, letterSpacing: 3, color: palette.muted}}>合計</div>
+          <div style={{fontSize: 22, fontWeight: 700, letterSpacing: 3, color: palette.muted}} id="donutTotal">{t.total}</div>
           <div style={{fontSize: 84, fontWeight: 900, color: palette.text, marginTop: 10}}>3h 42m</div>
         </div>
       </div>
@@ -176,7 +178,7 @@ const FullscreenDonut: React.FC<{frame: number; opacity: number}> = ({frame, opa
   );
 };
 
-const FullscreenTrendCard: React.FC<{frame: number; opacity: number}> = ({frame, opacity}) => {
+const FullscreenTrendCard: React.FC<{frame: number; opacity: number; t: import('./i18n').PromoTexts}> = ({frame, opacity, t}) => {
   const p = segment(frame, 450, 620);
   const points = [170, 188, 144, 126, 100, 72, 56];
   const d = points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${120 + index * 230} ${point + (1 - p) * 120}`).join(' ');
@@ -186,7 +188,7 @@ const FullscreenTrendCard: React.FC<{frame: number; opacity: number}> = ({frame,
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
           <div>
             {label('trend card', palette.blue)}
-            <div style={{fontSize: 68, fontWeight: 900, color: palette.text, marginTop: 16}}>合計使用時間</div>
+            <div style={{fontSize: 68, fontWeight: 900, color: palette.text, marginTop: 16}} id="trendTitle">{t.totalUsageTime}</div>
           </div>
           <div style={{fontSize: 96, fontWeight: 900, color: palette.green}}>-18%</div>
         </div>
@@ -236,27 +238,29 @@ const FullscreenCats: React.FC<{frame: number; opacity: number}> = ({frame, opac
   );
 };
 
-const CTA: React.FC<{progress: number}> = ({progress}) => (
+const CTA: React.FC<{progress: number; t: import('./i18n').PromoTexts}> = ({progress, t}) => (
   <>
     <div style={{...abs({left: 120, top: 250, width: 800}), opacity: progress}}>
       <div style={{fontSize: 24, fontWeight: 700, letterSpacing: 3, color: palette.blue}}>TATSU</div>
-      <div style={{fontSize: 110, fontWeight: 900, color: palette.text, lineHeight: 1.02, letterSpacing: -2.6, marginTop: 22}}>受動的デジタルデトックス</div>
+      <div style={{fontSize: 110, fontWeight: 900, color: palette.text, lineHeight: 1.02, letterSpacing: -2.6, marginTop: 22}}>{t.ctaTitle}</div>
     </div>
     <motion.div style={{...abs({left: 1130, top: 240, width: 520, padding: 32}), ...card({opacity: progress}), transform: `scale(${0.9 + progress * 0.1})`}} animate={{opacity: 1}} transition={{duration: 0.01}}>
       <div style={{display: 'flex', alignItems: 'center', gap: 24}}>
         <Img src={staticFile('app_icon.png')} style={{width: 120, height: 120, borderRadius: 28}} />
         <div>
           <div style={{fontSize: 52, fontWeight: 900, color: palette.text}}>TATSU</div>
-          <div style={{fontSize: 24, color: palette.muted, marginTop: 8}}>受動的デジタルデトックス</div>
+          <div style={{fontSize: 24, color: palette.muted, marginTop: 8}}>{t.ctaSubtitle}</div>
         </div>
       </div>
-      <div style={{marginTop: 30, padding: '18px 24px', borderRadius: 999, backgroundColor: palette.blue, color: '#fff', fontSize: 28, fontWeight: 700, textAlign: 'center'}}>Google Playで手に入れる</div>
+      <div style={{marginTop: 30, padding: '18px 24px', borderRadius: 999, backgroundColor: palette.blue, color: '#fff', fontSize: 28, fontWeight: 700, textAlign: 'center'}}>{t.ctaButton}</div>
     </motion.div>
   </>
 );
 
-export const TatsuPromo: React.FC = () => {
+export const TatsuPromo: React.FC<{lang?: Lang}> = ({lang = 'ja'}) => {
   const frame = useCurrentFrame();
+  const t = PROMO_TEXTS[lang];
+  const currentFontStack = getFontStack(lang);
   const taskOpacity = interpolate(frame, [0, 170, 220], [1, 1, 0], {extrapolateRight: 'clamp'});
   const barOpacity = interpolate(frame, [100, 180, 320, 380], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const donutOpacity = interpolate(frame, [260, 330, 500, 560], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
@@ -265,16 +269,20 @@ export const TatsuPromo: React.FC = () => {
   const ctaProgress = segment(frame, 830, 900);
 
   return (
-    <AbsoluteFill style={{fontFamily: fontStack, backgroundColor: '#ffffff', color: palette.text, overflow: 'hidden'}}>
+    <AbsoluteFill style={{fontFamily: currentFontStack, backgroundColor: '#ffffff', color: palette.text, overflow: 'hidden'}}>
       <div style={abs({inset: 0, background: 'radial-gradient(circle at 12% 18%, rgba(232,240,254,0.8), transparent 28%), radial-gradient(circle at 82% 24%, rgba(230,244,234,0.9), transparent 22%), linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'})} />
       <div style={abs({inset: 0, backgroundImage: 'linear-gradient(rgba(32,33,36,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(32,33,36,0.025) 1px, transparent 1px)', backgroundSize: '120px 120px'})} />
-      <FullscreenTaskCard frame={frame} opacity={taskOpacity} />
-      <FullscreenBarChart frame={frame} opacity={barOpacity} />
-      <FullscreenDonut frame={frame} opacity={donutOpacity} />
-      <FullscreenTrendCard frame={frame} opacity={trendOpacity} />
+      <FullscreenTaskCard frame={frame} opacity={taskOpacity} t={t} />
+      <FullscreenBarChart frame={frame} opacity={barOpacity} t={t} />
+      <FullscreenDonut frame={frame} opacity={donutOpacity} t={t} />
+      <FullscreenTrendCard frame={frame} opacity={trendOpacity} t={t} />
       <FullscreenCats frame={frame} opacity={catsOpacity} />
       <div style={{...abs({inset: 0}), opacity: interpolate(frame, [800, 860, 900], [0, 1, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}), background: 'linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.82) 36%, rgba(255,255,255,1) 100%)'}} />
-      <CTA progress={ctaProgress} />
+      <CTA progress={ctaProgress} t={t} />
     </AbsoluteFill>
   );
 };
+
+// Language-specific wrapper components
+export const TatsuPromoEN: React.FC = () => <TatsuPromo lang="en" />;
+export const TatsuPromoKO: React.FC = () => <TatsuPromo lang="ko" />;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" id="htmlRoot">
 
 <head>
     <meta charset="UTF-8">
@@ -24,7 +24,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Sans:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
         rel="stylesheet">
     <script>
         tailwind.config = {
@@ -40,16 +40,29 @@
 
 <body class="bg-gray-50 text-slate-800 font-sans min-h-screen flex flex-col">
     <nav class="p-6 border-b border-gray-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
             <a href="index.html"
                 class="font-bold text-xl text-slate-900 tracking-wider hover:text-blue-600 transition">TATSU</a>
+            <!-- Language Selector -->
+            <div class="relative" id="langSelectorWrap">
+                <button id="langToggle" class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition px-2 py-1 rounded-lg hover:bg-gray-50" aria-label="Select language">
+                    <i class="fas fa-globe text-base"></i>
+                    <span id="langLabel">日本語</span>
+                    <i class="fas fa-chevron-down text-[10px] ml-0.5"></i>
+                </button>
+                <div id="langDropdown" class="hidden absolute right-0 top-full mt-1 bg-white rounded-xl shadow-lg border border-gray-200 py-1 min-w-[140px] z-[60]">
+                    <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition" data-lang="ja">日本語</button>
+                    <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition" data-lang="en">English</button>
+                    <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition" data-lang="ko">한국어</button>
+                </div>
+            </div>
         </div>
     </nav>
 
     <div class="max-w-2xl mx-auto px-6 py-16 flex-grow">
-        <h1 class="text-3xl font-bold text-slate-900 mb-8 border-b pb-4 text-center">お問い合わせ</h1>
+        <h1 class="text-3xl font-bold text-slate-900 mb-8 border-b pb-4 text-center" data-i18n="page_title">お問い合わせ</h1>
 
-        <p class="mb-12 text-gray-600 leading-relaxed text-center">
+        <p class="mb-12 text-gray-600 leading-relaxed text-center" data-i18n-html="page_desc">
             TATSUに関するご質問、ご要望、不具合のご報告は、以下の窓口より承っております。<br>
             お気軽にご連絡ください。
         </p>
@@ -64,13 +77,12 @@
                         <i class="fas fa-clipboard-question text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-900">お問い合わせフォーム</h3>
-                        <p class="text-sm text-gray-500">不具合報告や機能要望はこちら（Googleフォーム）</p>
+                        <h3 class="font-bold text-slate-900" data-i18n="form_title">お問い合わせフォーム</h3>
+                        <p class="text-sm text-gray-500" data-i18n="form_desc">不具合報告や機能要望はこちら（Googleフォーム）</p>
                     </div>
                     <i class="fas fa-chevron-right ml-auto text-gray-300 group-hover:text-blue-400"></i>
                 </div>
             </a>
-
 
             <!-- X (Ops) -->
             <a href="https://x.com/zenhancelabs" target="_blank" class="block group">
@@ -81,8 +93,8 @@
                         <i class="fab fa-twitter text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-900">運営アカウント (@zenhancelabs)</h3>
-                        <p class="text-sm text-gray-500">公式なお知らせや更新情報</p>
+                        <h3 class="font-bold text-slate-900" data-i18n="x_title">運営アカウント (@zenhancelabs)</h3>
+                        <p class="text-sm text-gray-500" data-i18n="x_desc">公式なお知らせや更新情報</p>
                     </div>
                     <i class="fas fa-chevron-right ml-auto text-gray-300 group-hover:text-sky-400"></i>
                 </div>
@@ -97,7 +109,7 @@
                         <i class="fas fa-envelope text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-900">メールでのお問い合わせ</h3>
+                        <h3 class="font-bold text-slate-900" data-i18n="email_title">メールでのお問い合わせ</h3>
                         <p class="text-sm text-gray-500">zenhancelabs@gmail.com</p>
                     </div>
                     <i class="fas fa-chevron-right ml-auto text-gray-300 group-hover:text-gray-400"></i>
@@ -111,6 +123,69 @@
             &copy; 2026 Zenhance
         </div>
     </footer>
+
+    <!-- i18n Engine -->
+    <script>
+    (function() {
+        const T = {
+            ja: {
+                _title: 'お問い合わせ - TATSU', _langLabel: '日本語',
+                page_title: 'お問い合わせ',
+                page_desc: 'TATSUに関するご質問、ご要望、不具合のご報告は、以下の窓口より承っております。<br>お気軽にご連絡ください。',
+                form_title: 'お問い合わせフォーム',
+                form_desc: '不具合報告や機能要望はこちら（Googleフォーム）',
+                x_title: '運営アカウント (@zenhancelabs)',
+                x_desc: '公式なお知らせや更新情報',
+                email_title: 'メールでのお問い合わせ',
+            },
+            en: {
+                _title: 'Contact - TATSU', _langLabel: 'English',
+                page_title: 'Contact Us',
+                page_desc: 'For questions, feature requests, or bug reports about TATSU, please reach out through any of the channels below.',
+                form_title: 'Contact Form',
+                form_desc: 'Bug reports & feature requests (Google Form)',
+                x_title: 'Official Account (@zenhancelabs)',
+                x_desc: 'Official announcements and updates',
+                email_title: 'Email Us',
+            },
+            ko: {
+                _title: '문의하기 - TATSU', _langLabel: '한국어',
+                page_title: '문의하기',
+                page_desc: 'TATSU에 관한 질문, 요청, 버그 신고는 아래 창구를 통해 접수하고 있습니다.<br>편하게 연락해 주세요.',
+                form_title: '문의 양식',
+                form_desc: '버그 신고 및 기능 요청 (Google 양식)',
+                x_title: '공식 계정 (@zenhancelabs)',
+                x_desc: '공식 공지 및 업데이트 정보',
+                email_title: '이메일 문의',
+            }
+        };
+        function detectLang() {
+            const s = localStorage.getItem('tatsu_lang');
+            if (s && T[s]) return s;
+            const n = (navigator.language||'').toLowerCase();
+            if (n.startsWith('ja')) return 'ja';
+            if (n.startsWith('ko')) return 'ko';
+            return 'en';
+        }
+        function apply(lang) {
+            localStorage.setItem('tatsu_lang', lang);
+            const t = T[lang]; if (!t) return;
+            document.getElementById('htmlRoot').setAttribute('lang', lang);
+            document.title = t._title;
+            document.getElementById('langLabel').textContent = t._langLabel;
+            const fm = {ja:'"Noto Sans JP"', en:'"Noto Sans"', ko:'"Noto Sans KR"'};
+            document.body.style.fontFamily = `${fm[lang]}, sans-serif`;
+            document.querySelectorAll('[data-i18n]').forEach(el => { const k=el.getAttribute('data-i18n'); if(t[k]!==undefined) el.textContent=t[k]; });
+            document.querySelectorAll('[data-i18n-html]').forEach(el => { const k=el.getAttribute('data-i18n-html'); if(t[k]!==undefined) el.innerHTML=t[k]; });
+            document.querySelectorAll('.lang-option').forEach(b => { b.classList.toggle('text-blue-600',b.dataset.lang===lang); b.classList.toggle('font-bold',b.dataset.lang===lang); });
+        }
+        const toggle=document.getElementById('langToggle'), dd=document.getElementById('langDropdown');
+        toggle.addEventListener('click',e=>{e.stopPropagation();dd.classList.toggle('hidden');});
+        document.addEventListener('click',()=>dd.classList.add('hidden'));
+        document.querySelectorAll('.lang-option').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();apply(b.dataset.lang);dd.classList.add('hidden');}));
+        apply(detectLang());
+    })();
+    </script>
 </body>
 
 </html>

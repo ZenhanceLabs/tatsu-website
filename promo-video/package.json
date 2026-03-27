@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "remotion studio src/index.ts",
     "preview": "remotion preview src/index.ts",
-    "render": "remotion render src/index.ts TatsuPromo out/tatsu-promo.mp4"
+    "render": "remotion render src/index.ts TatsuPromo out/tatsu-promo.mp4",
+    "render:en": "remotion render src/index.ts TatsuPromoEN out/tatsu-promo-en.mp4",
+    "render:ko": "remotion render src/index.ts TatsuPromoKO out/tatsu-promo-ko.mp4"
   },
   "dependencies": {
     "framer-motion": "^12.23.24",

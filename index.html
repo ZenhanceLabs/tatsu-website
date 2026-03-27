@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" class="scroll-smooth">
+<html lang="ja" class="scroll-smooth" id="htmlRoot">
 
 <head>
     <meta charset="UTF-8">
@@ -26,7 +26,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
         rel="stylesheet">
 
     <script>
@@ -217,8 +217,21 @@
                 <!-- Matching contact.html logo style -->
                 <a href="index.html"
                     class="font-bold text-xl text-slate-900 tracking-wider hover:text-blue-600 transition">TATSU</a>
-                <div>
-                    <a href="#download" class="google-btn text-sm">アプリを入手</a>
+                <div class="flex items-center gap-3">
+                    <!-- Language Selector -->
+                    <div class="relative" id="langSelectorWrap">
+                        <button id="langToggle" class="flex items-center gap-1.5 text-sm text-google-muted hover:text-google-blue transition px-2 py-1 rounded-lg hover:bg-gray-50" aria-label="Select language">
+                            <i class="fas fa-globe text-base"></i>
+                            <span id="langLabel">日本語</span>
+                            <i class="fas fa-chevron-down text-[10px] ml-0.5"></i>
+                        </button>
+                        <div id="langDropdown" class="hidden absolute right-0 top-full mt-1 bg-white rounded-xl shadow-lg border border-google-border py-1 min-w-[140px] z-[60]">
+                            <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-google-surface transition" data-lang="ja">日本語</button>
+                            <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-google-surface transition" data-lang="en">English</button>
+                            <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-google-surface transition" data-lang="ko">한국어</button>
+                        </div>
+                    </div>
+                    <a href="#download" class="google-btn text-sm" data-i18n="nav_cta">アプリを入手</a>
                 </div>
             </div>
         </div>
@@ -236,17 +249,17 @@
                 <span class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold tracking-wider border border-blue-100">NEW RELEASE</span>
             </div>
             <h1 class="text-[1.8rem] sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.15] mb-8 text-slate-900 tracking-tight flex flex-col items-start gap-2">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500 whitespace-nowrap">がんばらなくていい</span>
-                <span class="whitespace-nowrap">デジタルデトックス。</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500 whitespace-nowrap" data-i18n="hero_title_1">がんばらなくていい</span>
+                <span class="whitespace-nowrap" data-i18n="hero_title_2">デジタルデトックス。</span>
             </h1>
-            <p class="text-lg md:text-xl text-slate-600 mb-10 leading-relaxed font-medium">
+            <p class="text-lg md:text-xl text-slate-600 mb-10 leading-relaxed font-medium" data-i18n-html="hero_desc"><!--filled by i18n-->
                 システムに、ただ身を委ねるだけ。<br>
                 TATSUはもう意志の力に頼りません。<br>
                 スマートに、ストレスなく毎日のスマホ時間を減らします。
             </p>
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 scroll-mt-32" id="download">
                 <a href="https://play.google.com/store/apps/details?id=com.zenhance.taskdetox"
-                    class="bg-blue-600 text-white rounded-full py-4 px-10 font-bold text-lg shadow-xl shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-600/40 hover:-translate-y-1 transition duration-300 flex items-center" target="_blank" rel="noopener noreferrer">
+                    class="bg-blue-600 text-white rounded-full py-4 px-10 font-bold text-lg shadow-xl shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-600/40 hover:-translate-y-1 transition duration-300 flex items-center" target="_blank" rel="noopener noreferrer" data-i18n-html="hero_cta">
                     <i class="fab fa-google-play mr-2 text-xl"></i> Google Playで手に入れる
                 </a>
                 <p class="text-sm text-slate-500 font-medium ml-2">Android 10+</p>
@@ -281,25 +294,25 @@
                 class="flex gap-4 md:gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar carousel-container px-[calc(50%-108px)] md:px-[calc(50%-142px)]">
 
                 <div class="carousel-item">
-                    <img src="home.png" alt="TATSU Home" class="carousel-img">
+                    <img src="home.png" alt="TATSU Home" class="carousel-img" data-i18n-src="ss_home">
                 </div>
                 <div class="carousel-item">
-                    <img src="restriction.png" alt="TATSU Detox" class="carousel-img">
+                    <img src="restriction.png" alt="TATSU Detox" class="carousel-img" data-i18n-src="ss_restriction">
                 </div>
                 <div class="carousel-item">
-                    <img src="analysis_1.png" alt="TATSU Analysis" class="carousel-img">
+                    <img src="analysis_1.png" alt="TATSU Analysis" class="carousel-img" data-i18n-src="ss_analysis_1">
                 </div>
                 <div class="carousel-item">
-                    <img src="catsfile.png" alt="TATSU Cats Catalog" class="carousel-img">
+                    <img src="catsfile.png" alt="TATSU Cats Catalog" class="carousel-img" data-i18n-src="ss_catsfile">
                 </div>
                 <div class="carousel-item">
-                    <img src="select_mode.png" alt="TATSU Mode Selection" class="carousel-img">
+                    <img src="select_mode.png" alt="TATSU Mode Selection" class="carousel-img" data-i18n-src="ss_select_mode">
                 </div>
                 <div class="carousel-item">
-                    <img src="obtain_cat.png" alt="TATSU Obtain Cat" class="carousel-img">
+                    <img src="obtain_cat.png" alt="TATSU Obtain Cat" class="carousel-img" data-i18n-src="ss_obtain_cat">
                 </div>
                 <div class="carousel-item">
-                    <img src="analysis_pro.png" alt="TATSU Pro Analysis" class="carousel-img">
+                    <img src="analysis_pro.png" alt="TATSU Pro Analysis" class="carousel-img" data-i18n-src="ss_analysis_pro">
                 </div>
 
             </div>
@@ -316,8 +329,8 @@
         </div>
 
         <div class="max-w-6xl mx-auto px-6 lg:px-8 relative z-10 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-google-text tracking-tight">可愛らしい電子猫たち。</h2>
-            <p class="text-lg text-google-muted leading-relaxed max-w-2xl mx-auto mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-google-text tracking-tight" data-i18n="cats_title">可愛らしい電子猫たち。</h2>
+            <p class="text-lg text-google-muted leading-relaxed max-w-2xl mx-auto mb-12" data-i18n-html="cats_desc">
                 TATSUが提案したタスクを達成すると、ドット絵の「電子猫」と出会うことができます。<br>
                 何度か出会って仲良くなると、そのままアプリに居着くようになります。<br>
                 珍しい電子猫を見つけて、ホーム画面に飾りましょう。
@@ -332,8 +345,8 @@
     <section class="py-24 bg-white">
         <div class="max-w-6xl mx-auto px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-google-text tracking-tight">あなたに合わせた3つの厳しさ。</h2>
-                <p class="text-lg text-google-muted">ライフスタイルや目的に応じて、最適な制限レベルを選択できます。</p>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-google-text tracking-tight" data-i18n="modes_title">あなたに合わせた3つの厳しさ。</h2>
+                <p class="text-lg text-google-muted" data-i18n="modes_subtitle">ライフスタイルや目的に応じて、最適な制限レベルを選択できます。</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -342,11 +355,11 @@
                     <div
                         class="w-12 h-12 bg-google-lightBlue text-google-blue rounded-full flex items-center justify-center mb-6 text-xl font-bold">
                         1</div>
-                    <h3 class="text-2xl font-bold text-google-text mb-2">ふつうに制限</h3>
+                    <h3 class="text-2xl font-bold text-google-text mb-2" data-i18n="mode1_title">ふつうに制限</h3>
                     <div class="mb-4"><span
                             class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs font-bold uppercase">Free</span>
                     </div>
-                    <p class="text-google-muted flex-grow">
+                    <p class="text-google-muted flex-grow" data-i18n="mode1_desc">
                         どうしても必要な時は「延長」も可能なスタンダードモード。まずはここから自分のペースで始めましょう。
                     </p>
                 </div>
@@ -356,11 +369,11 @@
                     <div
                         class="w-12 h-12 bg-google-lightYellow text-google-darkYellow rounded-full flex items-center justify-center mb-6 text-xl font-bold">
                         2</div>
-                    <h3 class="text-2xl font-bold text-google-text mb-2">がっちり制限</h3>
+                    <h3 class="text-2xl font-bold text-google-text mb-2" data-i18n="mode2_title">がっちり制限</h3>
                     <div class="mb-4"><span
                             class="bg-google-blue text-white px-2 py-0.5 rounded text-xs font-bold uppercase">Pro</span>
                     </div>
-                    <p class="text-google-muted flex-grow">
+                    <p class="text-google-muted flex-grow" data-i18n="mode2_desc">
                         安易に延長したり、取り消したりできない本気のデトックスモード。システムがあなたの妥協を許しません。
                     </p>
                 </div>
@@ -370,11 +383,11 @@
                     <div
                         class="w-12 h-12 bg-red-50 text-red-600 rounded-full flex items-center justify-center mb-6 text-xl font-bold">
                         3</div>
-                    <h3 class="text-2xl font-bold text-google-text mb-2">バディと制限</h3>
+                    <h3 class="text-2xl font-bold text-google-text mb-2" data-i18n="mode3_title">バディと制限</h3>
                     <div class="mb-4"><span
                             class="bg-google-blue text-white px-2 py-0.5 rounded text-xs font-bold uppercase">Pro</span>
                     </div>
-                    <p class="text-google-muted flex-grow">
+                    <p class="text-google-muted flex-grow" data-i18n="mode3_desc">
                         信頼できる「バディ」の許可がないと制限を解除できない厳しめのピアプレッシャーモード。誰かと一緒なら、必ず達成できる。
                     </p>
                 </div>
@@ -389,8 +402,8 @@
                     <div class="w-12 h-12 bg-white text-google-blue rounded-full flex items-center justify-center mb-6 text-2xl shadow-sm">
                         <i class="fas fa-shield-halved"></i>
                     </div>
-                    <h2 class="text-2xl md:text-3xl font-bold mb-4 text-google-text tracking-tight">徹底したプライバシー保護。</h2>
-                    <p class="text-lg text-google-muted leading-relaxed">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4 text-google-text tracking-tight" data-i18n="privacy_title">徹底したプライバシー保護。</h2>
+                    <p class="text-lg text-google-muted leading-relaxed" data-i18n-html="privacy_desc">
                         アプリのデータはすべて<strong>デバイス内にローカルで保存</strong>されます。<br>
                         スマホの利用状況やタスクの達成記録などが<strong>外部のサーバーに送信されることは一切ありません</strong>。<br>
                         安心して、あなたのペースでデジタルデトックスに取り組めます。
@@ -404,8 +417,8 @@
     <section class="py-24 bg-google-surface border-y border-google-border">
         <div class="max-w-6xl mx-auto px-6 lg:px-8">
             <div class="mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-google-text tracking-tight">TATSU Proで、さらに強力に。</h2>
-                <p class="text-lg text-google-muted">さらに進化した機能で、あなたのデジタルデトックスを完全サポートします。</p>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-google-text tracking-tight" data-i18n="pro_title">TATSU Proで、さらに強力に。</h2>
+                <p class="text-lg text-google-muted" data-i18n="pro_subtitle">さらに進化した機能で、あなたのデジタルデトックスを完全サポートします。</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -416,8 +429,8 @@
                         class="w-10 h-10 rounded-full bg-google-lightBlue text-google-blue flex items-center justify-center mb-4">
                         <i class="fas fa-lock text-lg"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-google-text mb-2">プロフェッショナルな制限モード</h3>
-                    <p class="text-sm text-google-muted">
+                    <h3 class="text-lg font-bold text-google-text mb-2" data-i18n="pro_f1_title">プロフェッショナルな制限モード</h3>
+                    <p class="text-sm text-google-muted" data-i18n="pro_f1_desc">
                         デフォルトの「ふつうに制限」に加え、本気の「がっちり制限」、仲間と取り組む「バディと制限」の2つのモードが解放されます。
                     </p>
                 </div>
@@ -427,8 +440,8 @@
                         class="w-10 h-10 rounded-full bg-google-lightBlue text-google-blue flex items-center justify-center mb-4">
                         <i class="fas fa-robot text-lg"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-google-text mb-2">制限の自動実行 (TATSU-AGENT)</h3>
-                    <p class="text-sm text-google-muted">
+                    <h3 class="text-lg font-bold text-google-text mb-2" data-i18n="pro_f2_title">制限の自動実行 (TATSU-AGENT)</h3>
+                    <p class="text-sm text-google-muted" data-i18n="pro_f2_desc">
                         あなたがいちいち「許可」を押す必要はありません。システムが自動で制限を適用し、シームレスに機能します。
                     </p>
                 </div>
@@ -438,8 +451,8 @@
                         class="w-10 h-10 rounded-full bg-google-lightBlue text-google-blue flex items-center justify-center mb-4">
                         <i class="fas fa-lightbulb text-lg"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-google-text mb-2">高度な制限提案 (TATSU-AGENT)</h3>
-                    <p class="text-sm text-google-muted">
+                    <h3 class="text-lg font-bold text-google-text mb-2" data-i18n="pro_f3_title">高度な制限提案 (TATSU-AGENT)</h3>
+                    <p class="text-sm text-google-muted" data-i18n="pro_f3_desc">
                         AIから提案されるタスクの枚数が増加。より豊富で、あなたに合わせた効果的な制限のパターンを提示します。
                     </p>
                 </div>
@@ -449,8 +462,8 @@
                         class="w-10 h-10 rounded-full bg-google-lightBlue text-google-blue flex items-center justify-center mb-4">
                         <i class="fas fa-chart-pie text-lg"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-google-text mb-2">高度な分析機能</h3>
-                    <p class="text-sm text-google-muted">
+                    <h3 class="text-lg font-bold text-google-text mb-2" data-i18n="pro_f4_title">高度な分析機能</h3>
+                    <p class="text-sm text-google-muted" data-i18n="pro_f4_desc">
                         あなたのスマホ利用データを細かくトラッキングし、習慣の改善度合いをはっきりと可視化します。
                     </p>
                 </div>
@@ -460,8 +473,8 @@
                         class="w-10 h-10 rounded-full bg-google-lightBlue text-google-blue flex items-center justify-center mb-4">
                         <i class="fas fa-cat text-lg"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-google-text mb-2">より多くの電子猫たち</h3>
-                    <p class="text-sm text-google-muted">
+                    <h3 class="text-lg font-bold text-google-text mb-2" data-i18n="pro_f5_title">より多くの電子猫たち</h3>
+                    <p class="text-sm text-google-muted" data-i18n="pro_f5_desc">
                         ホームタブに飾れる電子猫の数が、無料版の1匹から最大3匹まで増枠。より賑やかなホーム画面に。
                     </p>
                 </div>
@@ -471,8 +484,8 @@
                         class="w-10 h-10 rounded-full bg-google-lightBlue text-google-blue flex items-center justify-center mb-4">
                         <i class="fas fa-ban text-lg"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-google-text mb-2">広告完全非表示</h3>
-                    <p class="text-sm text-google-muted">
+                    <h3 class="text-lg font-bold text-google-text mb-2" data-i18n="pro_f6_title">広告完全非表示</h3>
+                    <p class="text-sm text-google-muted" data-i18n="pro_f6_desc">
                         アプリ内の広告を完全に非表示にし、ノイズのない、よりデトックスに集中できる快適な環境を提供します。
                     </p>
                 </div>
@@ -485,13 +498,13 @@
         <div class="max-w-6xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
             <div class="mb-8 md:mb-0">
                 <a href="index.html" class="font-bold text-2xl text-slate-900 tracking-wider">TATSU</a>
-                <p class="text-sm text-google-muted mt-2">受動的デジタルデトックスアプリ</p>
+                <p class="text-sm text-google-muted mt-2" data-i18n="footer_tagline">受動的デジタルデトックスアプリ</p>
             </div>
 
             <div class="flex space-x-6 text-sm font-medium text-google-muted">
-                <a href="contact.html" class="hover:text-google-blue transition">お問い合わせ</a>
-                <a href="terms.html" class="hover:text-google-blue transition">利用規約</a>
-                <a href="privacy.html" class="hover:text-google-blue transition">プライバシーポリシー</a>
+                <a href="contact.html" class="hover:text-google-blue transition" data-i18n="footer_contact">お問い合わせ</a>
+                <a href="terms.html" class="hover:text-google-blue transition" data-i18n="footer_terms">利用規約</a>
+                <a href="privacy.html" class="hover:text-google-blue transition" data-i18n="footer_privacy">プライバシーポリシー</a>
             </div>
         </div>
         <div class="max-w-6xl mx-auto px-6 lg:px-8 mt-8 text-xs text-google-muted">
@@ -834,6 +847,246 @@
                 startAutoScroll();
             }
         });
+    </script>
+
+    <!-- i18n Engine -->
+    <script>
+    (function() {
+        const TRANSLATIONS = {
+            ja: {
+                _title: 'TATSU - がんばらなくていいデジタルデトックス',
+                _ogTitle: 'TATSU - がんばらなくていいデジタルデトックス',
+                _ogDesc: 'システムに身を委ねるだけの「がんばらなくていい」デジタルデトックス。スマートに、ストレスなくスマホ時間を減らします。',
+                _langLabel: '日本語',
+                nav_cta: 'アプリを入手',
+                hero_title_1: 'がんばらなくていい',
+                hero_title_2: 'デジタルデトックス。',
+                hero_desc: 'システムに、ただ身を委ねるだけ。<br>TATSUはもう意志の力に頼りません。<br>スマートに、ストレスなく毎日のスマホ時間を減らします。',
+                hero_cta: '<i class="fab fa-google-play mr-2 text-xl"></i> Google Playで手に入れる',
+                cats_title: '可愛らしい電子猫たち。',
+                cats_desc: 'TATSUが提案したタスクを達成すると、ドット絵の「電子猫」と出会うことができます。<br>何度か出会って仲良くなると、そのままアプリに居着くようになります。<br>珍しい電子猫を見つけて、ホーム画面に飾りましょう。',
+                modes_title: 'あなたに合わせた3つの厳しさ。',
+                modes_subtitle: 'ライフスタイルや目的に応じて、最適な制限レベルを選択できます。',
+                mode1_title: 'ふつうに制限',
+                mode1_desc: 'どうしても必要な時は「延長」も可能なスタンダードモード。まずはここから自分のペースで始めましょう。',
+                mode2_title: 'がっちり制限',
+                mode2_desc: '安易に延長したり、取り消したりできない本気のデトックスモード。システムがあなたの妥協を許しません。',
+                mode3_title: 'バディと制限',
+                mode3_desc: '信頼できる「バディ」の許可がないと制限を解除できない厳しめのピアプレッシャーモード。誰かと一緒なら、必ず達成できる。',
+                privacy_title: '徹底したプライバシー保護。',
+                privacy_desc: 'アプリのデータはすべて<strong>デバイス内にローカルで保存</strong>されます。<br>スマホの利用状況やタスクの達成記録などが<strong>外部のサーバーに送信されることは一切ありません</strong>。<br>安心して、あなたのペースでデジタルデトックスに取り組めます。',
+                pro_title: 'TATSU Proで、さらに強力に。',
+                pro_subtitle: 'さらに進化した機能で、あなたのデジタルデトックスを完全サポートします。',
+                pro_f1_title: 'プロフェッショナルな制限モード',
+                pro_f1_desc: 'デフォルトの「ふつうに制限」に加え、本気の「がっちり制限」、仲間と取り組む「バディと制限」の2つのモードが解放されます。',
+                pro_f2_title: '制限の自動実行 (TATSU-AGENT)',
+                pro_f2_desc: 'あなたがいちいち「許可」を押す必要はありません。システムが自動で制限を適用し、シームレスに機能します。',
+                pro_f3_title: '高度な制限提案 (TATSU-AGENT)',
+                pro_f3_desc: 'AIから提案されるタスクの枚数が増加。より豊富で、あなたに合わせた効果的な制限のパターンを提示します。',
+                pro_f4_title: '高度な分析機能',
+                pro_f4_desc: 'あなたのスマホ利用データを細かくトラッキングし、習慣の改善度合いをはっきりと可視化します。',
+                pro_f5_title: 'より多くの電子猫たち',
+                pro_f5_desc: 'ホームタブに飾れる電子猫の数が、無料版の1匹から最大3匹まで増枠。より賑やかなホーム画面に。',
+                pro_f6_title: '広告完全非表示',
+                pro_f6_desc: 'アプリ内の広告を完全に非表示にし、ノイズのない、よりデトックスに集中できる快適な環境を提供します。',
+                footer_tagline: '受動的デジタルデトックスアプリ',
+                footer_contact: 'お問い合わせ',
+                footer_terms: '利用規約',
+                footer_privacy: 'プライバシーポリシー',
+                // Screenshot paths (root-relative)
+                ss_home: 'home.png',
+                ss_restriction: 'restriction.png',
+                ss_analysis_1: 'analysis_1.png',
+                ss_catsfile: 'catsfile.png',
+                ss_select_mode: 'select_mode.png',
+                ss_obtain_cat: 'obtain_cat.png',
+                ss_analysis_pro: 'analysis_pro.png',
+            },
+            en: {
+                _title: 'TATSU — Digital Detox, No Willpower Needed',
+                _ogTitle: 'TATSU — Digital Detox, No Willpower Needed',
+                _ogDesc: 'A "passive" digital detox that works automatically. Reduce screen time smartly, stress-free.',
+                _langLabel: 'English',
+                nav_cta: 'Get the App',
+                hero_title_1: 'No willpower needed.',
+                hero_title_2: 'Digital detox.',
+                hero_desc: 'Just let the system take over.<br>TATSU doesn\'t rely on your willpower.<br>Smartly and stress-free, it reduces your daily screen time.',
+                hero_cta: '<i class="fab fa-google-play mr-2 text-xl"></i> Get it on Google Play',
+                cats_title: 'Adorable Pixel Cats.',
+                cats_desc: 'Complete the tasks TATSU suggests, and you\'ll meet pixel art "Pixel Cats."<br>Meet them often enough and they\'ll settle into your app for good.<br>Discover rare Pixel Cats and display them on your home screen.',
+                modes_title: '3 levels of restriction to suit you.',
+                modes_subtitle: 'Choose the restriction level that fits your lifestyle and goals.',
+                mode1_title: 'Standard Restriction',
+                mode1_desc: 'A standard mode that still allows extensions when you really need them. A gentle start at your own pace.',
+                mode2_title: 'Strict Restriction',
+                mode2_desc: 'A serious detox mode with no easy extensions or cancellations. The system won\'t tolerate compromises.',
+                mode3_title: 'Buddy Restriction',
+                mode3_desc: 'A peer-pressure mode: restrictions can only be lifted with your trusted "Buddy\'s" approval. Together, you\'ll stay on track.',
+                privacy_title: 'Your privacy, fully protected.',
+                privacy_desc: 'All app data is <strong>stored locally on your device</strong>.<br>Usage stats and achievement records are <strong>never sent to external servers</strong>.<br>Detox at your own pace with complete peace of mind.',
+                pro_title: 'Even more powerful with TATSU Pro.',
+                pro_subtitle: 'Advanced features to fully support your digital detox journey.',
+                pro_f1_title: 'Professional Restriction Modes',
+                pro_f1_desc: 'Unlock two additional modes beyond the default: the no-compromise "Strict Restriction" and the accountability-driven "Buddy Restriction."',
+                pro_f2_title: 'Auto-Enforcement (TATSU-AGENT)',
+                pro_f2_desc: 'No need to manually approve each restriction. The system applies limits automatically and seamlessly.',
+                pro_f3_title: 'Advanced Task Suggestions (TATSU-AGENT)',
+                pro_f3_desc: 'More AI-suggested restriction tasks with richer, more personalized patterns tailored to your habits.',
+                pro_f4_title: 'Advanced Analytics',
+                pro_f4_desc: 'Detailed tracking of your phone usage data with clear visualizations of your habit improvements.',
+                pro_f5_title: 'More Pixel Cats',
+                pro_f5_desc: 'Display up to 3 Pixel Cats on your home tab instead of just 1. Make your home screen livelier.',
+                pro_f6_title: 'Ad-Free Experience',
+                pro_f6_desc: 'Completely remove in-app ads for a distraction-free environment focused purely on your detox.',
+                footer_tagline: 'Passive digital detox app',
+                footer_contact: 'Contact',
+                footer_terms: 'Terms of Service',
+                footer_privacy: 'Privacy Policy',
+                ss_home: 'screenshot/home_en.png',
+                ss_restriction: 'screenshot/restriction_en.png',
+                ss_analysis_1: 'screenshot/analysis_1_en.png',
+                ss_catsfile: 'screenshot/catsfile_en.png',
+                ss_select_mode: 'screenshot/select_mode_en.png',
+                ss_obtain_cat: 'screenshot/obtain_cat_en.png',
+                ss_analysis_pro: 'screenshot/analysis_pro_en.png',
+            },
+            ko: {
+                _title: 'TATSU — 노력 없이도 되는 디지털 디톡스',
+                _ogTitle: 'TATSU — 노력 없이도 되는 디지털 디톡스',
+                _ogDesc: '시스템에 맡기기만 하면 되는 "수동적" 디지털 디톡스. 스마트하게, 스트레스 없이 스마트폰 사용 시간을 줄여보세요.',
+                _langLabel: '한국어',
+                nav_cta: '앱 다운로드',
+                hero_title_1: '노력 없이도 되는',
+                hero_title_2: '디지털 디톡스.',
+                hero_desc: '시스템에 맡기기만 하면 됩니다.<br>TATSU는 더 이상 의지력에 의존하지 않습니다.<br>스마트하게, 스트레스 없이 매일의 스마트폰 사용 시간을 줄여줍니다.',
+                hero_cta: '<i class="fab fa-google-play mr-2 text-xl"></i> Google Play에서 다운로드',
+                cats_title: '귀여운 전자 고양이들.',
+                cats_desc: 'TATSU가 제안한 과제를 달성하면 도트 아트 "전자 고양이"를 만날 수 있습니다.<br>여러 번 만나 친해지면 앱에 눌러앉게 됩니다.<br>희귀한 전자 고양이를 찾아 홈 화면에 장식해 보세요.',
+                modes_title: '나에게 맞는 3단계 제한.',
+                modes_subtitle: '라이프스타일과 목적에 맞는 최적의 제한 레벨을 선택할 수 있습니다.',
+                mode1_title: '기본 제한',
+                mode1_desc: '꼭 필요할 때 "연장"이 가능한 기본 모드. 자신만의 페이스로 시작해 보세요.',
+                mode2_title: '강력 제한',
+                mode2_desc: '쉽게 연장하거나 취소할 수 없는 본격 디톡스 모드. 시스템이 타협을 허락하지 않습니다.',
+                mode3_title: '버디 제한',
+                mode3_desc: '신뢰할 수 있는 "버디"의 승인 없이는 제한을 해제할 수 없는 피어 프레셔 모드. 함께라면 반드시 달성할 수 있습니다.',
+                privacy_title: '철저한 개인정보 보호.',
+                privacy_desc: '앱의 모든 데이터는 <strong>기기 내에 로컬로 저장</strong>됩니다.<br>스마트폰 사용 현황이나 과제 달성 기록이 <strong>외부 서버로 전송되는 일은 절대 없습니다</strong>.<br>안심하고 자신만의 속도로 디지털 디톡스에 집중하세요.',
+                pro_title: 'TATSU Pro로 더 강력하게.',
+                pro_subtitle: '한층 진화한 기능으로 디지털 디톡스를 완벽하게 서포트합니다.',
+                pro_f1_title: '프로페셔널 제한 모드',
+                pro_f1_desc: '기본 "기본 제한" 외에 본격적인 "강력 제한"과 함께하는 "버디 제한" 2가지 모드가 해금됩니다.',
+                pro_f2_title: '제한 자동 실행 (TATSU-AGENT)',
+                pro_f2_desc: '일일이 "허가" 버튼을 누를 필요가 없습니다. 시스템이 자동으로 제한을 적용하고 매끄럽게 작동합니다.',
+                pro_f3_title: '고급 제한 제안 (TATSU-AGENT)',
+                pro_f3_desc: 'AI가 제안하는 과제 수가 증가합니다. 보다 풍부하고 맞춤화된 효과적인 제한 패턴을 제시합니다.',
+                pro_f4_title: '고급 분석 기능',
+                pro_f4_desc: '스마트폰 사용 데이터를 세밀하게 추적하고 습관 개선 정도를 뚜렷하게 시각화합니다.',
+                pro_f5_title: '더 많은 전자 고양이',
+                pro_f5_desc: '홈 탭에 표시할 수 있는 전자 고양이 수가 무료 1마리에서 최대 3마리로 증가. 더 활기찬 홈 화면을.',
+                pro_f6_title: '광고 완전 제거',
+                pro_f6_desc: '앱 내 광고를 완전히 제거하여 방해 없이 디톡스에 집중할 수 있는 쾌적한 환경을 제공합니다.',
+                footer_tagline: '수동적 디지털 디톡스 앱',
+                footer_contact: '문의하기',
+                footer_terms: '이용약관',
+                footer_privacy: '개인정보 처리방침',
+                ss_home: 'screenshot/home_ko.png',
+                ss_restriction: 'screenshot/restriction_ko.png',
+                ss_analysis_1: 'screenshot/analysis_1_ko.png',
+                ss_catsfile: 'screenshot/catsfile_ko.png',
+                ss_select_mode: 'screenshot/select_mode_ko.png',
+                ss_obtain_cat: 'screenshot/obtain_cat_ko.png',
+                ss_analysis_pro: 'screenshot/analysis_pro_ko.png',
+            }
+        };
+
+        // Detect language: localStorage > navigator.language > default 'en'
+        function detectLang() {
+            const saved = localStorage.getItem('tatsu_lang');
+            if (saved && TRANSLATIONS[saved]) return saved;
+            const nav = (navigator.language || '').toLowerCase();
+            if (nav.startsWith('ja')) return 'ja';
+            if (nav.startsWith('ko')) return 'ko';
+            return 'en';
+        }
+
+        let currentLang = detectLang();
+
+        function applyLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('tatsu_lang', lang);
+            const t = TRANSLATIONS[lang];
+            if (!t) return;
+
+            // Update <html lang>
+            document.getElementById('htmlRoot').setAttribute('lang', lang);
+
+            // Update <title>
+            document.title = t._title;
+
+            // Update OGP meta
+            const metaMap = {
+                'og:title': t._ogTitle, 'og:description': t._ogDesc,
+                'twitter:title': t._ogTitle, 'twitter:description': t._ogDesc
+            };
+            for (const [prop, val] of Object.entries(metaMap)) {
+                const el = document.querySelector(`meta[property="${prop}"], meta[name="${prop}"]`);
+                if (el) el.setAttribute('content', val);
+            }
+
+            // Update font family
+            const fontMap = { ja: '"Noto Sans JP"', en: '"Noto Sans"', ko: '"Noto Sans KR"' };
+            document.body.style.fontFamily = `${fontMap[lang]}, sans-serif`;
+
+            // Update lang label
+            document.getElementById('langLabel').textContent = t._langLabel;
+
+            // data-i18n (textContent)
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key] !== undefined) el.textContent = t[key];
+            });
+
+            // data-i18n-html (innerHTML)
+            document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                const key = el.getAttribute('data-i18n-html');
+                if (t[key] !== undefined) el.innerHTML = t[key];
+            });
+
+            // data-i18n-src (image src)
+            document.querySelectorAll('[data-i18n-src]').forEach(el => {
+                const key = el.getAttribute('data-i18n-src');
+                if (t[key] !== undefined) el.setAttribute('src', t[key]);
+            });
+
+            // Highlight active lang option
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                btn.classList.toggle('text-google-blue', btn.dataset.lang === lang);
+                btn.classList.toggle('font-bold', btn.dataset.lang === lang);
+            });
+        }
+
+        // Language dropdown toggle
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', () => dropdown.classList.add('hidden'));
+
+        // Language option clicks
+        document.querySelectorAll('.lang-option').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                applyLang(btn.dataset.lang);
+                dropdown.classList.add('hidden');
+            });
+        });
+
+        // Apply on load
+        applyLang(currentLang);
+    })();
     </script>
 </body>
 

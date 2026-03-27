@@ -4,7 +4,7 @@ import {EndingInstallStudy} from './EndingInstallStudy';
 import {FeatureTriptychStudy} from './FeatureTriptychStudy';
 import {OpeningFlowStudy} from './OpeningFlowStudy';
 import {TatsuSequenceStudy} from './TatsuSequenceStudy';
-import {TatsuPromo} from './TatsuPromo';
+import {TatsuPromo, TatsuPromoEN, TatsuPromoKO} from './TatsuPromo';
 import {TaskNoiseStudy} from './TaskNoiseStudy';
 import {UsageCatsStudy} from './UsageCatsStudy';
 
@@ -14,6 +14,24 @@ export const RemotionRoot = () => {
       <Composition
         id="TatsuPromo"
         component={TatsuPromo}
+        durationInFrames={900}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="TatsuPromoEN"
+        component={TatsuPromoEN}
+        durationInFrames={900}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="TatsuPromoKO"
+        component={TatsuPromoKO}
         durationInFrames={900}
         fps={30}
         width={1920}
