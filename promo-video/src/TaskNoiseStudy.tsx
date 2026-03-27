@@ -1,6 +1,7 @@
 import {motion} from 'framer-motion';
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame} from 'remotion';
+import {type Lang, SEQ_TEXTS} from './i18n';
 
 const palette = {
   blue: '#1a73e8',
@@ -33,16 +34,19 @@ const card = (extra?: React.CSSProperties): React.CSSProperties => ({
   ...extra,
 });
 
-const tasks = [
-  {start: 28, appName: 'YouTube', rule: '1日60分まで', accent: palette.blue, icon: 'Youtube.webp', titleStrikeWidth: 132, ruleStrikeWidth: 138},
-  {start: 56, appName: 'Instagram', rule: '起動前に10秒待機', accent: palette.green, icon: 'Instagram.webp', titleStrikeWidth: 156, ruleStrikeWidth: 164},
-  {start: 84, appName: 'X', rule: '22時以降は停止', accent: palette.red, icon: 'X.webp', titleStrikeWidth: 28, ruleStrikeWidth: 130},
-  {start: 112, appName: 'Chrome', rule: '起動回数を制限', accent: palette.blue, icon: 'Chrome.webp', titleStrikeWidth: 112, ruleStrikeWidth: 142},
-  {start: 140, appName: 'LINE', rule: '30分で終了', accent: palette.green, icon: 'LINE.webp', titleStrikeWidth: 72, ruleStrikeWidth: 108},
-  {start: 168, appName: 'Instagram', rule: '通知からは開かない', accent: palette.red, icon: 'Instagram.webp', titleStrikeWidth: 156, ruleStrikeWidth: 168},
-] as const;
+const getTasksForLang = (lang: Lang) => {
+  const t = SEQ_TEXTS[lang];
+  return [
+    {start: 28, appName: 'YouTube', rule: t.taskRules[0], accent: palette.blue, icon: 'Youtube.webp', titleStrikeWidth: 132, ruleStrikeWidth: 138},
+    {start: 56, appName: 'Instagram', rule: t.taskRules[1], accent: palette.green, icon: 'Instagram.webp', titleStrikeWidth: 156, ruleStrikeWidth: 164},
+    {start: 84, appName: 'X', rule: t.taskRules[2], accent: palette.red, icon: 'X.webp', titleStrikeWidth: 28, ruleStrikeWidth: 130},
+    {start: 112, appName: 'Chrome', rule: t.taskRules[3], accent: palette.blue, icon: 'Chrome.webp', titleStrikeWidth: 112, ruleStrikeWidth: 142},
+    {start: 140, appName: 'LINE', rule: t.taskRules[4], accent: palette.green, icon: 'LINE.webp', titleStrikeWidth: 72, ruleStrikeWidth: 108},
+    {start: 168, appName: 'Instagram', rule: t.taskRules[5], accent: palette.red, icon: 'Instagram.webp', titleStrikeWidth: 156, ruleStrikeWidth: 168},
+  ] as const;
+};
 
-const dayLabels = ['月', '火', '水', '木', '金', '土', '日'];
+const getDayLabelsForLang = (lang: Lang) => SEQ_TEXTS[lang].dayLabels;
 const barHeights = [500, 486, 470, 452, 438, 424, 412];
 const barAccents = [palette.red, palette.blue, palette.green, palette.red, palette.blue, palette.green, palette.blue];
 const barFills = [palette.redSoft, palette.blueSoft, palette.greenSoft, palette.redSoft, palette.blueSoft, palette.greenSoft, palette.blueSoft];
@@ -98,8 +102,11 @@ const TaskStudyCard: React.FC<{
   );
 };
 
-export const TaskNoiseStudy: React.FC<{sequenceMode?: boolean; sharedBackground?: boolean}> = ({sequenceMode = false, sharedBackground = false}) => {
+export const TaskNoiseStudy: React.FC<{sequenceMode?: boolean; sharedBackground?: boolean; lang?: Lang}> = ({sequenceMode = false, sharedBackground = false, lang = 'ja'}) => {
   const frame = useCurrentFrame();
+  const t = SEQ_TEXTS[lang];
+  const tasks = getTasksForLang(lang);
+  const dayLabels = getDayLabelsForLang(lang);
   const lift = springAt(frame, 206, 22);
   const visibleTasks = sequenceMode ? tasks.slice(0, 5) : tasks;
   const visibleBarHeights = sequenceMode ? [500, 438, 370, 304, 250, 214, 186] : barHeights;
@@ -118,7 +125,7 @@ export const TaskNoiseStudy: React.FC<{sequenceMode?: boolean; sharedBackground?
   const taskListStart = sequenceMode ? 152 : 90;
 
   return (
-    <AbsoluteFill style={{backgroundColor: sharedBackground ? 'transparent' : '#ffffff', overflow: 'hidden', fontFamily: '"Noto Sans JP", sans-serif'}}>
+    <AbsoluteFill style={{backgroundColor: sharedBackground ? 'transparent' : '#ffffff', overflow: 'hidden', fontFamily: t.fontFamily}}>
       {sharedBackground ? null : <div style={abs({inset: 0, background: 'radial-gradient(circle at 14% 18%, rgba(232,240,254,0.85), transparent 30%), radial-gradient(circle at 88% 20%, rgba(230,244,234,0.95), transparent 26%), linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'})} />}
 
       <div style={{...abs({left: 0, top: -lift * 920, width: 1920, height: 1080}), transform: `scale(${1 - lift * 0.06})`, transformOrigin: 'center top'}}>

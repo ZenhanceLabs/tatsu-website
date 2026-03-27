@@ -4,6 +4,7 @@ import {EndingInstallStudy} from './EndingInstallStudy';
 import {FeatureTriptychStudy} from './FeatureTriptychStudy';
 import {OpeningFlowStudy} from './OpeningFlowStudy';
 import {TaskNoiseStudy} from './TaskNoiseStudy';
+import {type Lang, SEQ_TEXTS} from './i18n';
 
 const abs = (style: React.CSSProperties): React.CSSProperties => ({position: 'absolute', ...style});
 
@@ -35,7 +36,7 @@ const SceneTransition: React.FC<{duration: number; children: React.ReactNode; en
   return <AbsoluteFill style={{opacity, transform: `translateX(${translateX}px) translateY(${translateY}px)`}}>{children}</AbsoluteFill>;
 };
 
-const CaptionOverlay: React.FC<{text: string; exitStart?: number}> = ({text, exitStart}) => {
+const CaptionOverlay: React.FC<{text: string; exitStart?: number; fontFamily?: string}> = ({text, exitStart, fontFamily = '"Noto Sans JP", sans-serif'}) => {
   const frame = useCurrentFrame();
   const slideIn = spring({
     fps: 30,
@@ -53,14 +54,15 @@ const CaptionOverlay: React.FC<{text: string; exitStart?: number}> = ({text, exi
         transform: `translateY(${(1 - slideIn) * 32 - slideOut * 120}px)`,
       }}
     >
-      <div style={{fontFamily: '"Noto Sans JP", sans-serif', fontSize: 44, lineHeight: 1.15, fontWeight: 900, color: '#202124', whiteSpace: 'nowrap'}}>{text}</div>
+      <div style={{fontFamily, fontSize: 44, lineHeight: 1.15, fontWeight: 900, color: '#202124', whiteSpace: 'nowrap'}}>{text}</div>
     </div>
   );
 };
 
-export const TatsuSequenceStudy: React.FC = () => {
+export const TatsuSequenceStudy: React.FC<{lang?: Lang}> = ({lang = 'ja'}) => {
   const frame = useCurrentFrame();
   const {durationInFrames} = useVideoConfig();
+  const t = SEQ_TEXTS[lang];
 
   const openingStart = 0;
   const openingDuration = 150;
@@ -89,34 +91,40 @@ export const TatsuSequenceStudy: React.FC = () => {
       ) : null}
       <Sequence from={openingStart} durationInFrames={openingDuration}>
         <SceneTransition duration={openingDuration} exitY={160} exitFade>
-          <OpeningFlowStudy sharedBackground />
+          <OpeningFlowStudy sharedBackground lang={lang} />
         </SceneTransition>
       </Sequence>
 
       <Sequence from={taskStart} durationInFrames={taskDuration}>
         <SceneTransition duration={taskDuration} exitY={-180}>
-          <TaskNoiseStudy sequenceMode sharedBackground />
+          <TaskNoiseStudy sequenceMode sharedBackground lang={lang} />
           <CaptionOverlay
-            text="TATSU-AI のタスクをこなすだけで、利用時間を削減"
+            text={t.captionTask}
             exitStart={206}
+            fontFamily={t.fontFamily}
           />
         </SceneTransition>
       </Sequence>
 
       <Sequence from={featureStart} durationInFrames={featureDuration}>
         <SceneTransition duration={featureDuration} enterY={180}>
-          <FeatureTriptychStudy sequenceMode sharedBackground />
+          <FeatureTriptychStudy sequenceMode sharedBackground lang={lang} />
           <CaptionOverlay
-            text="さまざまな機能で、デジタルデトックスをサポート"
+            text={t.captionFeature}
+            fontFamily={t.fontFamily}
           />
         </SceneTransition>
       </Sequence>
 
       <Sequence from={endingStart} durationInFrames={endingDuration}>
         <SceneTransition duration={endingDuration} enterY={140}>
-          <EndingInstallStudy sharedBackground />
+          <EndingInstallStudy sharedBackground lang={lang} />
         </SceneTransition>
       </Sequence>
     </AbsoluteFill>
   );
 };
+
+// Language-specific wrapper components
+export const TatsuSequenceStudyEN: React.FC = () => <TatsuSequenceStudy lang="en" />;
+export const TatsuSequenceStudyKO: React.FC = () => <TatsuSequenceStudy lang="ko" />;

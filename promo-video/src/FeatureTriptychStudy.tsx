@@ -2,6 +2,7 @@ import {motion} from 'framer-motion';
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame} from 'remotion';
 import {pixelCats} from './pixelCatsData';
+import {type Lang, SEQ_TEXTS} from './i18n';
 
 const palette = {
   blue: '#1a73e8',
@@ -80,14 +81,19 @@ const ModeIcon: React.FC<{kind: 'free' | 'strict' | 'buddy'; color: string}> = (
   );
 };
 
-const PhoneFrame: React.FC<{x: number; src: string; frame: number; delay: number; shiftY?: number; baseTop?: number}> = ({x, src, frame, delay, shiftY = 0, baseTop = 432}) => {
+const PhoneFrame: React.FC<{x: number; src: string; frame: number; delay: number; shiftY?: number; baseTop?: number; lang?: Lang}> = ({x, src, frame, delay, shiftY = 0, baseTop = 432, lang = 'ja'}) => {
   const rise = springAt(frame, delay, 24, 88, 240);
+  const getLocalizedScreenshot = (s: string, l: Lang) => {
+    if (l === 'ja') return s;
+    return s.replace('.png', `_${l}.png`);
+  };
+  const localizedSrc = getLocalizedScreenshot(src, lang);
   return (
     <div style={abs({left: x + 105, top: baseTop + (1 - rise) * 240, width: 430, height: 820, opacity: rise})}>
       <div style={{...abs({left: 0, top: 0, width: 430, height: 820}), borderRadius: 52, backgroundColor: '#111827'}} />
       <div style={{...abs({left: 10, top: 10, width: 410, height: 800}), borderRadius: 42, backgroundColor: '#000', overflow: 'hidden'}}>
         <div style={abs({left: 155, top: 10, width: 100, height: 22, borderRadius: 999, backgroundColor: '#111827', zIndex: 2})} />
-        <Img src={staticFile(src)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: `center ${shiftY}%`, transform: `scale(${1 + (1 - rise) * 0.06})`}} />
+        <Img src={staticFile(localizedSrc)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: `center ${shiftY}%`, transform: `scale(${1 + (1 - rise) * 0.06})`}} />
       </div>
     </div>
   );
@@ -100,11 +106,12 @@ const ColumnLabel: React.FC<{x: number; color: string; text: string; top?: numbe
   </div>
 );
 
-const ModesPanel: React.FC<{x: number; frame: number; yOffset?: number; compact?: boolean}> = ({x, frame, yOffset = 0, compact = false}) => {
+const ModesPanel: React.FC<{x: number; frame: number; yOffset?: number; compact?: boolean; lang?: Lang}> = ({x, frame, yOffset = 0, compact = false, lang = 'ja'}) => {
+  const t = SEQ_TEXTS[lang];
   const items = [
-    {name: 'ふつうに制限', badge: 'Free', color: palette.blue, fill: '#ffffff', y: 114, kind: 'free' as const},
-    {name: 'がっちり制限', badge: 'Pro', color: palette.yellow, fill: '#fffaf0', y: 214, kind: 'strict' as const},
-    {name: 'バディと制限', badge: 'Pro', color: palette.red, fill: '#fff6f5', y: 314, kind: 'buddy' as const},
+    {name: t.modeFree, badge: 'Free', color: palette.blue, fill: '#ffffff', y: 114, kind: 'free' as const},
+    {name: t.modeStrict, badge: 'Pro', color: palette.yellow, fill: '#fffaf0', y: 214, kind: 'strict' as const},
+    {name: t.modeBuddy, badge: 'Pro', color: palette.red, fill: '#fff6f5', y: 314, kind: 'buddy' as const},
   ];
 
   return (
@@ -212,7 +219,8 @@ const CatsPanel: React.FC<{x: number; frame: number; yOffset?: number; compact?:
   );
 };
 
-const AnalysisPanel: React.FC<{x: number; frame: number; yOffset?: number; compact?: boolean}> = ({x, frame, yOffset = 0, compact = false}) => {
+const AnalysisPanel: React.FC<{x: number; frame: number; yOffset?: number; compact?: boolean; lang?: Lang}> = ({x, frame, yOffset = 0, compact = false, lang = 'ja'}) => {
+  const t = SEQ_TEXTS[lang];
   const lineDraw = springAt(frame, 12, 22);
   const chartTop = 56;
   const chartBottom = 228;
@@ -251,21 +259,22 @@ const AnalysisPanel: React.FC<{x: number; frame: number; yOffset?: number; compa
       ].map((tick) => (
         <div key={tick.label} style={abs({left: x + (compact ? 24 : 0), top: 118 + yOffset + yForValue(tick.value) - 8, width: 40, textAlign: 'right', fontSize: 14, color: '#94a3b8'})}>{tick.label}</div>
       ))}
-      {['月', '火', '水', '木', '金', '土', '日'].map((label, index) => (
+      {t.dayLabels.map((label, index) => (
         <div key={label} style={abs({left: x + (compact ? 74 : 46) + index * 74, top: 354 + yOffset, width: 40, textAlign: 'center', fontSize: 14, color: '#94a3b8', opacity: springAt(frame, 24 + index * 2, 10)})}>{label}</div>
       ))}
     </>
   );
 };
 
-export const FeatureTriptychStudy: React.FC<{sequenceMode?: boolean; sharedBackground?: boolean}> = ({sequenceMode = false, sharedBackground = false}) => {
+export const FeatureTriptychStudy: React.FC<{sequenceMode?: boolean; sharedBackground?: boolean; lang?: Lang}> = ({sequenceMode = false, sharedBackground = false, lang = 'ja'}) => {
   const frame = useCurrentFrame();
+  const t = SEQ_TEXTS[lang];
   const labelTop = sequenceMode ? 132 : 34;
   const contentOffset = sequenceMode ? 44 : 0;
   const phoneTop = sequenceMode ? 466 : 432;
 
   return (
-    <AbsoluteFill style={{backgroundColor: sharedBackground ? 'transparent' : '#ffffff', overflow: 'hidden', fontFamily: '"Noto Sans JP", sans-serif'}}>
+    <AbsoluteFill style={{backgroundColor: sharedBackground ? 'transparent' : '#ffffff', overflow: 'hidden', fontFamily: t.fontFamily}}>
       {sharedBackground ? null : <div style={abs({inset: 0, background: 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'})} />}
       {sequenceMode ? null : <div style={abs({left: 640, top: 0, width: 1, height: 1080, backgroundColor: 'rgba(0,0,0,0.08)'})} />}
       {sequenceMode ? null : <div style={abs({left: 1280, top: 0, width: 1, height: 1080, backgroundColor: 'rgba(0,0,0,0.08)'})} />}
@@ -277,13 +286,13 @@ export const FeatureTriptychStudy: React.FC<{sequenceMode?: boolean; sharedBackg
       <ColumnLabel x={640} color={palette.green} text="pixel cats" top={labelTop} compact={sequenceMode} />
       <ColumnLabel x={1280} color={palette.red} text="analysis" top={labelTop} compact={sequenceMode} />
 
-      <ModesPanel x={0} frame={frame} yOffset={contentOffset} compact={sequenceMode} />
+      <ModesPanel x={0} frame={frame} yOffset={contentOffset} compact={sequenceMode} lang={lang} />
       <CatsPanel x={640} frame={frame} yOffset={contentOffset + 72} compact={sequenceMode} />
-      <AnalysisPanel x={1280} frame={frame} yOffset={contentOffset - 4} compact={sequenceMode} />
+      <AnalysisPanel x={1280} frame={frame} yOffset={contentOffset - 4} compact={sequenceMode} lang={lang} />
 
-      <PhoneFrame x={0} src="select_mode.png" frame={frame} delay={20} shiftY={6} baseTop={phoneTop} />
-      <PhoneFrame x={640} src="catsfile.png" frame={frame} delay={26} shiftY={8} baseTop={phoneTop} />
-      <PhoneFrame x={1280} src="analysis_1.png" frame={frame} delay={32} shiftY={6} baseTop={phoneTop} />
+      <PhoneFrame x={0} src="select_mode.png" frame={frame} delay={20} shiftY={6} baseTop={phoneTop} lang={lang} />
+      <PhoneFrame x={640} src="catsfile.png" frame={frame} delay={26} shiftY={8} baseTop={phoneTop} lang={lang} />
+      <PhoneFrame x={1280} src="analysis_1.png" frame={frame} delay={32} shiftY={6} baseTop={phoneTop} lang={lang} />
     </AbsoluteFill>
   );
 };

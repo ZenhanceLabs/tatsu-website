@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame} from 'remotion';
 import {pixelCats} from './pixelCatsData';
+import {type Lang, SEQ_TEXTS} from './i18n';
 
 const palette = {
   blue: '#1a73e8',
@@ -46,8 +47,9 @@ const StaticCat: React.FC<{size: number}> = ({size}) => {
   );
 };
 
-export const OpeningFlowStudy: React.FC<{sharedBackground?: boolean}> = ({sharedBackground = false}) => {
+export const OpeningFlowStudy: React.FC<{sharedBackground?: boolean; lang?: Lang}> = ({sharedBackground = false, lang = 'ja'}) => {
   const frame = useCurrentFrame();
+  const t = SEQ_TEXTS[lang];
   const iconIn = springAt(frame, 8, 18);
   const phoneIn = springAt(frame, 24, 24);
   const titleIn = springAt(frame, 58, 18);
@@ -57,8 +59,13 @@ export const OpeningFlowStudy: React.FC<{sharedBackground?: boolean}> = ({shared
   const catSize = 106;
   const catOverlap = 8;
 
+  const getLocalizedScreenshot = (src: string, lang: Lang) => {
+    if (lang === 'ja') return src;
+    return src.replace('.png', `_${lang}.png`);
+  };
+
   return (
-    <AbsoluteFill style={{backgroundColor: sharedBackground ? 'transparent' : '#ffffff', overflow: 'hidden', fontFamily: '"Noto Sans JP", sans-serif'}}>
+    <AbsoluteFill style={{backgroundColor: sharedBackground ? 'transparent' : '#ffffff', overflow: 'hidden', fontFamily: t.fontFamily}}>
       {sharedBackground ? null : <div style={abs({inset: 0, background: 'radial-gradient(circle at 16% 18%, rgba(232,240,254,0.92), transparent 28%), radial-gradient(circle at 84% 22%, rgba(230,244,234,0.92), transparent 24%), linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'})} />}
       {sharedBackground ? null : <div style={abs({left: 540, top: 72, width: 840, height: 900, borderRadius: 120, background: 'radial-gradient(circle at 50% 22%, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.84) 42%, rgba(255,255,255,0.08) 100%)', filter: 'blur(16px)', opacity: 0.95})} />}
 
@@ -72,7 +79,7 @@ export const OpeningFlowStudy: React.FC<{sharedBackground?: boolean}> = ({shared
       <div style={{...abs({left: 0, top: 344, width: '100%', opacity: titleIn}), display: 'flex', justifyContent: 'center'}}>
         <div style={{display: 'inline-flex', flexDirection: 'column', alignItems: 'center'}}>
           <div style={{fontSize: 20, fontWeight: 800, letterSpacing: 2.6, color: palette.blue, textAlign: 'center'}}>TATSU</div>
-          <div style={{fontSize: 34, fontWeight: 800, color: palette.text, marginTop: 10, whiteSpace: 'nowrap', textAlign: 'center'}}>がんばらなくていいデジタルデトックス</div>
+          <div style={{fontSize: 34, fontWeight: 800, color: palette.text, marginTop: 10, whiteSpace: 'nowrap', textAlign: 'center'}}>{t.openingTagline}</div>
         </div>
       </div>
 
@@ -96,7 +103,7 @@ export const OpeningFlowStudy: React.FC<{sharedBackground?: boolean}> = ({shared
               <div style={{...abs({left: 0, top: 0, width: 320, height: 610}), borderRadius: 44, backgroundColor: '#111827'}} />
               <div style={{...abs({left: 9, top: 9, width: 302, height: 592}), borderRadius: 36, backgroundColor: '#000', overflow: 'hidden'}}>
                 <div style={abs({left: 101, top: 10, width: 100, height: 20, borderRadius: 999, backgroundColor: '#111827', zIndex: 2})} />
-                <Img src={staticFile(shot.src)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 0%'}} />
+                <Img src={staticFile(getLocalizedScreenshot(shot.src, lang))} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 0%'}} />
               </div>
             </div>
           );

@@ -6,6 +6,7 @@ Usage: python generate_slides.py [--lang ja|en|ko]
 import os
 import sys
 import math
+import random
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 W, H = 1080, 1920
@@ -67,7 +68,7 @@ TEXTS = {
     'en': {
         's1_lines': ["Passive", "Digital", "Detox"],
         's1_sub': ["Just let the", "system take over."],
-        's2_lines': ["AI-suggested", "restriction tasks", "made for you."],
+        's2_lines': ["AI-suggested", "app limits", "made for you."],
         's2_sub': ["No willpower needed.", "Cut screen time effortlessly."],
         's3_title': ["3 restriction", "modes"],
         's3_sub': ["Find the style that suits you", "and start your detox"],
@@ -83,21 +84,21 @@ TEXTS = {
         's8_sub': ["Based on past data,", "deep analysis of daily patterns", "and hourly usage trends"],
     },
     'ko': {
-        's1_lines': ["수동적", "디지털", "디톡스"],
+        's1_lines': ["알아서 해주는", "디지털", "디톡스"],
         's1_sub': ["시스템에 맡기기만", "하면 됩니다."],
-        's2_lines': ["AI가 제안하는", "나만을 위한", "제한 과제."],
+        's2_lines': ["AI가 제안하는", "맞춤형", "앱 제한."],
         's2_sub': ["의지력에 기대지 않고,", "스마트폰 시간을 줄입니다."],
         's3_title': ["3가지", "제한 모드"],
         's3_sub': ["나에게 맞는 스타일로", "디톡스를 시작하세요"],
-        's4_title': ["스마트폰 사용", "시각화"],
-        's4_sub': ["습관 개선 정도를", "그래프로 확인"],
+        's4_title': ["스마트폰 사용", "패턴을 한눈에"],
+        's4_sub': ["그래프로 습관 개선을", "확인해 보세요"],
         's5_title': ["귀여운", "전자 고양이 모으기"],
         's5_sub': ["디톡스 노력이", "보상으로 바뀝니다!"],
         's6_title': ["데이터는 완전", "로컬 처리."],
         's6_accent': ["외부 전송 제로.", "안심의 프라이버시 설계."],
         's7_title': ["과다 사용 감지 &", "자동 제한 제안."],
-        's7_sub': ["AI가 사용 패턴을 분석하고", "최적의 제한 과제를", "실시간으로 추천"],
-        's8_title': ["한층 고급", "분석 리포트."],
+        's7_sub': ["AI가 사용 패턴을 분석하고", "맞춤형 앱 제한을", "실시간으로 추천"],
+        's8_title': ["한층 더 정교해진", "분석 리포트."],
         's8_sub': ["과거 데이터를 바탕으로", "요일별 사용 패턴과", "시간대별 경향을 심층 분석"],
     }
 }
@@ -117,12 +118,15 @@ def font(size, bold=True):
         return ImageFont.load_default()
 
 def gradient_bg(w, h, c1, c2):
+    """Smooth vertical gradient with dithering to prevent banding."""
     img = Image.new("RGB", (w, h))
     d = ImageDraw.Draw(img)
     for i in range(h):
-        r = c1[0] + (c2[0] - c1[0]) * i // h
-        g = c1[1] + (c2[1] - c1[1]) * i // h
-        b = c1[2] + (c2[2] - c1[2]) * i // h
+        t = i / max(h - 1, 1)
+        r = int(c1[0] + (c2[0] - c1[0]) * t + random.uniform(-0.5, 0.5))
+        g = int(c1[1] + (c2[1] - c1[1]) * t + random.uniform(-0.5, 0.5))
+        b = int(c1[2] + (c2[2] - c1[2]) * t + random.uniform(-0.5, 0.5))
+        r, g, b = max(0, min(255, r)), max(0, min(255, g)), max(0, min(255, b))
         d.line([(0,i),(w,i)], fill=(r,g,b))
     return img
 

@@ -5,6 +5,7 @@ import {FeatureTriptychStudy} from './FeatureTriptychStudy';
 import {OpeningFlowStudy} from './OpeningFlowStudy';
 import {TatsuSequenceStudy} from './TatsuSequenceStudy';
 import {TatsuPromo, TatsuPromoEN, TatsuPromoKO} from './TatsuPromo';
+import {TatsuSequenceStudyEN, TatsuSequenceStudyKO} from './TatsuSequenceStudy';
 import {TaskNoiseStudy} from './TaskNoiseStudy';
 import {UsageCatsStudy} from './UsageCatsStudy';
 
@@ -95,6 +96,24 @@ export const RemotionRoot = () => {
       <Composition
         id="TatsuSequenceStudy"
         component={TatsuSequenceStudy}
+        durationInFrames={720}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="TatsuSequenceStudyEN"
+        component={TatsuSequenceStudyEN}
+        durationInFrames={720}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="TatsuSequenceStudyKO"
+        component={TatsuSequenceStudyKO}
         durationInFrames={720}
         fps={30}
         width={1920}

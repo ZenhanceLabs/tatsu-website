@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame} from 'remotion';
 import {pixelCats} from './pixelCatsData';
+import {type Lang, SEQ_TEXTS} from './i18n';
 
 const palette = {
   blue: '#1a73e8',
@@ -68,8 +69,9 @@ const YawnCat: React.FC<{frame: number}> = ({frame}) => {
   );
 };
 
-export const EndingInstallStudy: React.FC<{sharedBackground?: boolean}> = ({sharedBackground = false}) => {
+export const EndingInstallStudy: React.FC<{sharedBackground?: boolean; lang?: Lang}> = ({sharedBackground = false, lang = 'ja'}) => {
   const frame = useCurrentFrame();
+  const t = SEQ_TEXTS[lang];
   const iconIn = springAt(frame, 4, 22);
   const copyIn = springAt(frame, 14, 22);
   const badgeIn = springAt(frame, 26, 20);
@@ -77,7 +79,7 @@ export const EndingInstallStudy: React.FC<{sharedBackground?: boolean}> = ({shar
   const glowDrift = interpolate(frame, [0, 119], [0, 1]);
 
   return (
-    <AbsoluteFill style={{backgroundColor: sharedBackground ? 'transparent' : '#ffffff', overflow: 'hidden', fontFamily: '"Noto Sans JP", sans-serif'}}>
+    <AbsoluteFill style={{backgroundColor: sharedBackground ? 'transparent' : '#ffffff', overflow: 'hidden', fontFamily: t.fontFamily}}>
       {sharedBackground ? null : (
         <>
           <div
@@ -141,8 +143,8 @@ export const EndingInstallStudy: React.FC<{sharedBackground?: boolean}> = ({shar
         }}
       >
         <div style={{fontSize: 20, fontWeight: 800, letterSpacing: 2.8, color: palette.blue}}>TATSU</div>
-        <div style={{fontSize: 72, lineHeight: 1.1, fontWeight: 900, color: palette.text, marginTop: 18}}>インストールして、<br />あとは任せる。</div>
-        <div style={{fontSize: 24, lineHeight: 1.6, color: palette.muted, marginTop: 22}}>デジタルデトックスを、気合いではなく仕組みで始める。</div>
+        <div style={{fontSize: 72, lineHeight: 1.1, fontWeight: 900, color: palette.text, marginTop: 18, whiteSpace: 'pre-line'}}>{t.endingTitle}</div>
+        <div style={{fontSize: 24, lineHeight: 1.6, color: palette.muted, marginTop: 22}}>{t.endingSub}</div>
       </div>
 
       <div
